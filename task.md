@@ -1,0 +1,7 @@
+- [x] Generate 4 story cover images (Fairy, Myth, Animals, Space) in Vibrant 3D Pixar Style
+- [x] Copy the generated images to the project's `assets/` directory
+- [x] Update `index.html` to display the new cover images on the story cards
+- [x] Attempt to generate 6 panel images for the Fairy story (Failed due to API quota limits)
+- [x] Implement magical CSS firefly animations in `story-viewer.html` instead to upgrade the panel visuals dynamically over emojis
+- [x] Add drop-shadows to emojis inside the scene to create a '3D floating' Pixar style effect
+- [ ] Verify the UI updates visually using walkthrough

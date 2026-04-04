@@ -1,0 +1,2095 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Story Time! 📚 — Kids Digital Comic</title>
+<meta name="description" content="Read panel-by-panel illustrated stories with magical voice narration." />
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --pink:   #FF1493;
+  --yellow: #FFEA00;
+  --blue:   #00E5FF;
+  --green:  #00FF7F;
+  --orange: #FF5E00;
+  --purple: #9D00FF;
+  --dark:   #2B0054;
+  --font:   'Baloo 2', cursive;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font);
+  min-height: 100vh;
+  background-color: var(--blue);
+  background-image: 
+    radial-gradient(#FFF 22%, transparent 22%),
+    radial-gradient(#FFF 22%, transparent 22%);
+  background-size: 48px 48px;
+  background-position: 0 0, 24px 24px;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  padding-bottom: 80px; /* Space for bottom nav */
+}
+
+/* ═══════════════════════════════════════
+   TOP BAR
+   ═══════════════════════════════════════ */
+.top-bar {
+  background: linear-gradient(135deg, var(--pink) 0%, #7C4DFF 100%);
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  box-shadow: 0 4px 16px rgba(124,77,255,.35);
+  position: sticky; top: 0; z-index: 100;
+  min-height: 56px;
+}
+.top-left { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
+.top-right { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+
+.back-btn {
+  background: var(--dark);
+  border: 3px solid var(--dark);
+  color: #fff;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  font-size: 16px; font-family: var(--font); font-weight: 800;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all .2s cubic-bezier(0.4, 0, 0.2, 1); flex-shrink: 0;
+  text-decoration: none; line-height: 1;
+  box-shadow: 3px 3px 0 rgba(0,0,0,0.5);
+}
+.back-btn:hover { transform: translate(-2px, -2px); box-shadow: 5px 5px 0 rgba(0,0,0,0.5); }
+.back-btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 rgba(0,0,0,0.5); }
+
+.genre-emoji { font-size: 1.4rem; flex-shrink: 0; }
+
+.story-title-bar {
+  color: #fff;
+  font-size: 1rem; font-weight: 900;
+  -webkit-text-stroke: 1px var(--dark);
+  text-shadow: 2px 3px 0 var(--dark);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+.lang-btn {
+  background: var(--dark);
+  border: 3px solid var(--dark);
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-family: var(--font); font-weight: 700; font-size: .9rem;
+  cursor: pointer; transition: all .18s;
+  box-shadow: 3px 4px 0 rgba(0,0,0,0.5);
+  min-width: 50px;
+}
+.lang-btn:hover, .lang-btn.active {
+  background: var(--yellow); color: var(--dark);
+  border-color: var(--dark);
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 6px 0 rgba(0,0,0,0.5);
+}
+
+/* ═══════════════════════════════════════
+   HELP BUTTON (Floating)
+   ═══════════════════════════════════════ */
+.help-btn {
+  position: fixed;
+  top: 70px;
+  right: 12px;
+  width: 44px; height: 44px;
+  background: var(--yellow);
+  border: 3px solid var(--dark);
+  border-radius: 50%;
+  font-size: 1.4rem;
+  cursor: pointer;
+  box-shadow: 3px 4px 0 var(--dark);
+  z-index: 150;
+  transition: all .2s;
+  display: flex; align-items: center; justify-content: center;
+}
+.help-btn:hover { transform: scale(1.1) rotate(-5deg); }
+.help-btn:active { transform: scale(0.95); }
+
+/* Help Tooltip */
+.help-tooltip {
+  position: fixed;
+  top: 120px;
+  right: 12px;
+  background: #fff;
+  border: 4px solid var(--dark);
+  border-radius: 16px;
+  padding: 14px;
+  width: 220px;
+  box-shadow: 6px 8px 0 var(--dark);
+  z-index: 200;
+  display: none;
+  animation: popIn 0.3s ease;
+}
+.help-tooltip.show { display: block; }
+@keyframes popIn {
+  from { transform: scale(0.8) rotate(-5deg); opacity: 0; }
+  to { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+.help-tooltip h4 {
+  font-size: 1rem; font-weight: 800; color: var(--dark);
+  margin-bottom: 10px;
+  display: flex; align-items: center; gap: 6px;
+}
+.help-tip {
+  font-size: .85rem; font-weight: 600; color: #555;
+  margin: 6px 0;
+  display: flex; align-items: center; gap: 8px;
+  line-height: 1.3;
+}
+
+/* ═══════════════════════════════════════
+   AUDIO CONTROLS (Integrated)
+   ═══════════════════════════════════════ */
+.audio-controls {
+  background: linear-gradient(160deg, #e8feff 0%, #fff8f0 100%);
+  border: 4px solid var(--dark);
+  border-radius: 20px;
+  margin: 12px 14px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 4px 6px 0 var(--dark);
+}
+
+.audio-owl {
+  width: 52px; height: 56px;
+  background: radial-gradient(ellipse at 40% 35%, #f9e4a0 0%, #e8c96e 60%, #c9a844 100%);
+  border-radius: 50% 50% 45% 45%;
+  position: relative;
+  border: 3px solid #c9a844;
+  flex-shrink: 0;
+}
+.audio-owl::before, .audio-owl::after {
+  content: '';
+  position: absolute;
+  top: -10px;
+  width: 12px; height: 16px;
+  background: #e8c96e;
+  border: 2px solid #c9a844;
+  border-radius: 50% 50% 0 0;
+}
+.audio-owl::before { left: 6px; transform: rotate(-15deg); }
+.audio-owl::after { right: 6px; transform: rotate(15deg); }
+.audio-owl-face {
+  position: absolute;
+  width: 38px; height: 36px;
+  background: radial-gradient(ellipse at 50% 45%, #fff5d0 0%, #f5d890 100%);
+  border-radius: 50%;
+  top: 8px; left: 50%; transform: translateX(-50%);
+}
+.audio-owl-eye {
+  position: absolute;
+  width: 12px; height: 12px;
+  background: #fff;
+  border-radius: 50%;
+  top: 6px;
+  border: 2px solid var(--dark);
+}
+.audio-owl-eye.left { left: 5px; }
+.audio-owl-eye.right { right: 5px; }
+.audio-owl-eye::after {
+  content: '';
+  position: absolute;
+  width: 6px; height: 6px;
+  background: var(--dark);
+  border-radius: 50%;
+  top: 2px; left: 2px;
+}
+.audio-owl-beak {
+  position: absolute;
+  bottom: 6px; left: 50%;
+  transform: translateX(-50%);
+  width: 0; height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 10px solid var(--orange);
+}
+.audio-owl.bouncing { animation: owlBounce .5s ease-in-out infinite alternate; }
+@keyframes owlBounce {
+  from { transform: translateY(0); }
+  to { transform: translateY(-6px); }
+}
+
+.audio-buttons {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.audio-btn {
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  border: 3px solid var(--dark);
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 3px 4px 0 var(--dark);
+  transition: all .15s;
+}
+.audio-btn:hover { transform: translate(-2px, -2px); box-shadow: 5px 6px 0 var(--dark); }
+.audio-btn:active { transform: translate(2px, 2px); box-shadow: 1px 2px 0 var(--dark); }
+.audio-btn.play { background: var(--green); }
+.audio-btn.pause { background: var(--yellow); }
+.audio-btn.stop { background: var(--orange); }
+.audio-btn.replay { background: var(--blue); }
+
+.speed-selector {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.speed-btn {
+  padding: 4px 8px;
+  border-radius: 8px;
+  border: 2px solid var(--dark);
+  background: #f5f0ff;
+  font-family: var(--font); font-size: .7rem; font-weight: 700;
+  cursor: pointer;
+  box-shadow: 2px 3px 0 var(--dark);
+  transition: all .15s;
+}
+.speed-btn:hover { transform: translate(-1px, -1px); }
+.speed-btn.active { background: var(--purple); color: #fff; }
+
+/* Waveform indicator */
+.waveform {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 30px;
+  margin-left: auto;
+}
+.wave-bar {
+  width: 5px;
+  border-radius: 3px;
+  background: linear-gradient(to top, var(--teal), var(--purple));
+  height: 6px;
+  transition: height .15s;
+}
+.waveform.playing .wave-bar:nth-child(1) { animation: wave 1.1s ease-in-out infinite; }
+.waveform.playing .wave-bar:nth-child(2) { animation: wave 0.9s ease-in-out infinite .1s; }
+.waveform.playing .wave-bar:nth-child(3) { animation: wave 1.3s ease-in-out infinite .05s; }
+.waveform.playing .wave-bar:nth-child(4) { animation: wave 0.8s ease-in-out infinite .15s; }
+@keyframes wave {
+  0%,100% { height: 6px; }
+  50% { height: 24px; }
+}
+
+/* Fallback notice */
+.fallback-notice {
+  background: linear-gradient(135deg, #fff7e0, #ffecc8);
+  border: 2px solid var(--yellow);
+  border-radius: 10px;
+  padding: 6px 12px;
+  font-size: .75rem; font-weight: 600;
+  color: #7a5500;
+  margin: 0 14px 8px;
+  display: none;
+  align-items: center;
+  gap: 6px;
+}
+.fallback-notice.show { display: flex; }
+
+/* ═══════════════════════════════════════
+   MAIN CONTENT
+   ═══════════════════════════════════════ */
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 14px 20px;
+  max-width: 680px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Panel Wrapper */
+.panel-wrapper {
+  width: 100%; position: relative; overflow: visible;
+  border-radius: 22px;
+  perspective: 1500px;
+}
+
+/* Panel Card */
+.panel-card {
+  width: 100%;
+  min-height: 400px;
+  border-radius: 20px;
+  border: 4px solid var(--dark);
+  box-shadow: 6px 7px 0 var(--dark), 0 12px 40px rgba(0,0,0,.18);
+  display: flex;
+  flex-direction: column;
+  position: relative; overflow: hidden;
+  will-change: transform, opacity;
+  transform-style: preserve-3d;
+  background-color: #fff;
+}
+.panel-card::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(to right, rgba(0,0,0,0.4) 0%, transparent 20%, transparent 80%, rgba(255,255,255,0.4) 100%);
+  opacity: 0; pointer-events: none; transition: opacity 0.3s; z-index: 20;
+}
+
+.panel-card.anim-exit-left  { animation: pageFlipLeftExit 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+.panel-card.anim-exit-left::after { opacity: 1; }
+.panel-card.anim-exit-right { animation: pageFlipRightExit 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+.panel-card.anim-exit-right::after { opacity: 1; background: linear-gradient(to left, rgba(0,0,0,0.4) 0%, transparent 20%); }
+.panel-card.anim-enter-left  { animation: pageFlipLeftEnter 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+.panel-card.anim-enter-right { animation: pageFlipRightEnter 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+.panel-card.anim-settled { transform: none; opacity: 1; }
+
+@keyframes pageFlipLeftExit {
+  0% { transform: rotateY(0deg); opacity: 1; transform-origin: left center; }
+  100% { transform: rotateY(-90deg) scale(0.95); opacity: 0; transform-origin: left center; }
+}
+@keyframes pageFlipRightExit {
+  0% { transform: rotateY(0deg); opacity: 1; transform-origin: right center; }
+  100% { transform: rotateY(90deg) scale(0.95); opacity: 0; transform-origin: right center; }
+}
+@keyframes pageFlipLeftEnter {
+  0% { transform: rotateY(90deg) scale(0.95); opacity: 0; transform-origin: right center; }
+  100% { transform: rotateY(0deg); opacity: 1; transform-origin: right center; }
+}
+@keyframes pageFlipRightEnter {
+  0% { transform: rotateY(-90deg) scale(0.95); opacity: 0; transform-origin: left center; }
+  100% { transform: rotateY(0deg); opacity: 1; transform-origin: left center; }
+}
+
+/* ═══════════════════════════════════════
+   PARTICLE CANVAS & MAGIC SPOTS
+   ═══════════════════════════════════════ */
+#particleCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2; }
+.magic-spot { position: absolute; width: 50px; height: 50px; transform: translate(-50%, -50%); border-radius: 50%; cursor: pointer; z-index: 5; -webkit-tap-highlight-color: transparent; }
+.magic-hint { position: absolute; top: 50px; left: 50%; transform: translateX(-50%) translateY(-20px); background: rgba(0,0,0,0.6); color: #fff; padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; pointer-events: none; opacity: 0; z-index: 10; transition: opacity 0.5s, transform 0.5s; backdrop-filter: blur(4px); border: 2px solid rgba(255,255,255,0.4); }
+.magic-hint.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.music-btn { background: var(--dark); border: 3px solid var(--dark); color: #fff; width: 36px; height: 36px; border-radius: 50%; font-size: 16px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all .2s; box-shadow: 3px 3px 0 rgba(0,0,0,0.5); flex-shrink: 0; }
+.music-btn:hover { transform: translate(-2px, -2px); box-shadow: 5px 5px 0 rgba(0,0,0,0.5); }
+.music-btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 rgba(0,0,0,0.5); }
+.music-btn.playing { background: var(--purple); color: var(--yellow); }
+
+
+/* panel-badge */
+.panel-badge {
+  position: absolute; top: 12px; right: 12px;
+  background: rgba(0,0,0,.48); color: #fff;
+  font-family: var(--font); font-weight: 800; font-size: .75rem;
+  padding: 4px 11px; border-radius: 20px; z-index: 10;
+  backdrop-filter: blur(6px);
+  letter-spacing: .02em;
+}
+
+/* Tap to Hear indicator */
+.tap-to-hear {
+  position: absolute;
+  top: 12px; left: 12px;
+  background: var(--yellow);
+  border: 3px solid var(--dark);
+  color: var(--dark);
+  font-family: var(--font); font-weight: 800; font-size: .7rem;
+  padding: 4px 10px; border-radius: 20px; z-index: 10;
+  cursor: pointer;
+  display: flex; align-items: center; gap: 4px;
+  box-shadow: 2px 3px 0 var(--dark);
+  transition: all .15s;
+  animation: pulse 2s ease-in-out infinite;
+}
+.tap-to-hear:hover { transform: scale(1.05); }
+@keyframes pulse {
+  0%,100% { box-shadow: 2px 3px 0 var(--dark); }
+  50% { box-shadow: 2px 3px 8px rgba(255,234,0,.6); }
+}
+
+/* Emoji Scene */
+.emoji-scene {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 28px 16px 10px;
+  cursor: pointer;
+  user-select: none;
+  gap: 4px;
+  min-height: 160px;
+  transition: all 0.3s ease;
+}
+.panel-card.has-image .emoji-scene {
+  min-height: 60px;
+  flex: 1;
+}
+
+.em {
+  display: inline-block;
+  font-size: clamp(3.8rem, 9vw, 5.5rem);
+  animation: floatEm 3.2s ease-in-out infinite;
+  transition: transform .2s;
+  line-height: 1;
+}
+.em:nth-child(1){ animation-delay: 0s;   animation-duration: 3.0s; }
+.em:nth-child(2){ animation-delay: 0.55s; animation-duration: 3.4s; }
+.em:nth-child(3){ animation-delay: 1.1s;  animation-duration: 2.8s; }
+.em:nth-child(4){ animation-delay: 1.65s; animation-duration: 3.6s; }
+.em:nth-child(5){ animation-delay: 2.2s;  animation-duration: 3.2s; }
+
+@keyframes floatEm {
+  0%,100% { transform: translateY(0) rotate(-4deg);    }
+  50%      { transform: translateY(-14px) rotate(4deg); }
+}
+
+/* Speech Bubble */
+.speech-bubble {
+  margin: 10px 20px 0;
+  background: #fff;
+  border: 4px solid var(--dark);
+  border-radius: 18px;
+  padding: 11px 18px;
+  font-family: var(--font); font-size: 1rem; font-weight: 700;
+  color: var(--dark);
+  position: relative;
+  box-shadow: 6px 8px 0 var(--dark);
+  text-align: center;
+  line-height: 1.45;
+  transition: all 0.3s ease;
+}
+.panel-card.has-image .speech-bubble {
+  margin: 8px 30px;
+  padding: 8px 14px;
+  font-size: 0.9rem;
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  border-width: 2px;
+}
+.speech-bubble::before {
+  content: '';
+  position: absolute;
+  top: -16px; left: 32px;
+  border: 0 solid transparent;
+  border-left: 11px solid transparent;
+  border-right: 7px solid transparent;
+  border-bottom: 16px solid var(--dark);
+}
+.speech-bubble::after {
+  content: '';
+  position: absolute;
+  top: -11px; left: 34px;
+  border: 0 solid transparent;
+  border-left: 9px solid transparent;
+  border-right: 5px solid transparent;
+  border-bottom: 12px solid #fff;
+}
+.panel-card.has-image .speech-bubble::before,
+.panel-card.has-image .speech-bubble::after { display: none; }
+
+
+/* Narration Bar */
+.narration-bar {
+  margin-top: 14px;
+  background: rgba(10,10,30,.78);
+  backdrop-filter: blur(8px);
+  color: #fff;
+  padding: 12px 18px;
+  font-family: var(--font); font-size: .9rem; font-weight: 600;
+  text-align: center; line-height: 1.5;
+  border-top: 2px solid rgba(255,255,255,.15);
+  border-radius: 0 0 16px 16px;
+  transition: all 0.3s ease;
+}
+.panel-card.has-image .narration-bar {
+  margin-top: 0;
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%);
+  border-top: none;
+  backdrop-filter: none;
+}
+
+
+/* Dots */
+.dots-row {
+  display: flex; gap: 9px; justify-content: center;
+  margin: 15px 0 8px;
+}
+.dot {
+  width: 13px; height: 13px; border-radius: 50%;
+  background: #DDD; border: 2.5px solid #BBB;
+  cursor: pointer; transition: all .25s;
+}
+.dot.active {
+  background: var(--pink); border-color: var(--dark);
+  transform: scale(1.35);
+  box-shadow: 0 0 0 3px rgba(255,107,157,.3);
+}
+
+/* Nav Buttons */
+.nav-row {
+  display: flex; gap: 18px; align-items: center; justify-content: center;
+  margin: 4px 0 8px;
+}
+.nav-btn {
+  width: 62px; height: 62px; border-radius: 50%;
+  border: 5px solid var(--dark);
+  font-size: 22px; font-family: var(--font); font-weight: 900;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  box-shadow: 6px 8px 0 var(--dark);
+  transition: all .14s;
+  -webkit-tap-highlight-color: transparent;
+}
+.nav-btn:hover:not(:disabled) {
+  transform: translate(-3px,-3px);
+  box-shadow: 9px 11px 0 var(--dark);
+}
+.nav-btn:active:not(:disabled) {
+  transform: translate(3px,3px);
+  box-shadow: 3px 5px 0 var(--dark);
+}
+.nav-btn:disabled {
+  background: #E8E8E8 !important; color: #BBB !important;
+  cursor: not-allowed;
+  box-shadow: 2px 2px 0 #CCC !important;
+  transform: none !important;
+}
+.nav-prev { background: var(--yellow); color: var(--dark); }
+.nav-next { background: var(--green);  color: var(--dark); }
+.nav-next.finish {
+  background: var(--pink); color: #fff;
+  animation: pulseFinish 1.2s ease-in-out infinite;
+}
+@keyframes pulseFinish {
+  0%,100%{ box-shadow: 6px 8px 0 var(--dark); transform: scale(1); }
+  50%    { box-shadow: 10px 14px 0 var(--dark); transform: scale(1.08) rotate(-3deg); }
+}
+
+.swipe-hint {
+  font-size: .75rem; color: #999; font-weight: 600;
+  text-align: center; margin-bottom: 4px;
+  user-select: none; letter-spacing: .03em;
+}
+
+/* ═══════════════════════════════════════
+   COMPLETION OVERLAY
+   ═══════════════════════════════════════ */
+.completion-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.82);
+  z-index: 500;
+  align-items: center; justify-content: center;
+  flex-direction: column;
+  padding: 20px;
+}
+.completion-overlay.show { display: flex; animation: fadeInOverlay .4s ease; }
+@keyframes fadeInOverlay { from{opacity:0} to{opacity:1} }
+
+.completion-card {
+  background: #fff;
+  border: 5px solid var(--dark);
+  border-radius: 26px;
+  padding: 34px 26px 28px;
+  max-width: 380px; width: 100%;
+  text-align: center;
+  box-shadow: 10px 14px 0 var(--dark);
+  animation: bounceCard .65s cubic-bezier(.68,-.55,.27,1.55) both;
+}
+@keyframes bounceCard {
+  0%  { transform:scale(.25); opacity:0; }
+  60% { transform:scale(1.08); }
+  80% { transform:scale(.96); }
+  100%{ transform:scale(1);   opacity:1; }
+}
+.comp-emoji { font-size: 3rem; margin-bottom: 6px; }
+.comp-title {
+  font-size: 2rem; font-weight: 900; color: #FFF;
+  -webkit-text-stroke: 2px var(--dark);
+  text-shadow: 4px 4px 0 var(--dark);
+  margin-bottom: 6px; line-height: 1.2;
+}
+.comp-stars { font-size: 1.8rem; margin: 4px 0 10px; letter-spacing: 2px; }
+.comp-text  { font-size: .95rem; color: #555; font-weight: 600; margin-bottom: 22px; }
+.comp-btns  { display: flex; flex-direction: column; gap: 12px; }
+.comp-btn {
+  padding: 14px 20px;
+  border-radius: 14px; border: 4px solid var(--dark);
+  font-family: var(--font); font-size: 1rem; font-weight: 800;
+  cursor: pointer;
+  box-shadow: 6px 8px 0 var(--dark);
+  transition: all .14s; width: 100%;
+}
+.comp-btn:hover  { transform:translate(-3px,-3px); box-shadow:9px 11px 0 var(--dark); }
+.comp-btn:active { transform:translate(3px,3px);   box-shadow:3px 5px 0 var(--dark); }
+.comp-quiz    { background: var(--yellow); color: var(--dark); }
+.comp-library { background: var(--blue);   color: #fff; }
+
+#confetti-cnv {
+  position: fixed; inset: 0;
+  pointer-events: none; z-index: 600;
+  width: 100%; height: 100%;
+}
+
+/* ═══════════════════════════════════════
+   BOTTOM NAVIGATION BAR
+   ═══════════════════════════════════════ */
+.bottom-nav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: linear-gradient(135deg, var(--dark) 0%, #1a0033 100%);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 10px 8px;
+  box-shadow: 0 -4px 20px rgba(0,0,0,.3);
+  z-index: 200;
+}
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  text-decoration: none;
+  color: #aaa;
+  font-family: var(--font);
+  font-size: .65rem;
+  font-weight: 700;
+  transition: all .2s;
+  padding: 4px 12px;
+  border-radius: 12px;
+}
+.nav-item:hover { color: #fff; }
+.nav-item.active { color: var(--yellow); }
+.nav-item .nav-icon {
+  font-size: 1.5rem;
+  transition: transform .2s;
+}
+.nav-item:hover .nav-icon { transform: scale(1.15); }
+.nav-item.active .nav-icon { transform: scale(1.2); }
+
+/* ═══════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════ */
+@media (max-width: 420px) {
+  .story-title-bar { font-size: .88rem; }
+  .panel-card { min-height: 380px; }
+  .nav-btn { width: 52px; height: 52px; font-size: 18px; }
+  .speech-bubble { font-size: .88rem; }
+  .narration-bar { font-size: .82rem; }
+  .audio-controls { padding: 10px 12px; gap: 8px; }
+  .audio-btn { width: 38px; height: 38px; font-size: 1rem; }
+}
+
+/* ═══════════════════════════════════════
+   FIREFLIES / MAGIC DUST
+   ═══════════════════════════════════════ */
+.firefly {
+  position: absolute;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1;
+  animation: wander 8s infinite ease-in-out alternate;
+  opacity: 0.8;
+}
+
+@keyframes wander {
+  0% { transform: translate(0, 0) scale(1); opacity: 0.2; }
+  25% { transform: translate(30px, -40px) scale(1.5); opacity: 1; }
+  50% { transform: translate(-20px, -80px) scale(0.8); opacity: 0.4; }
+  75% { transform: translate(40px, -120px) scale(1.2); opacity: 0.9; }
+  100% { transform: translate(-30px, -160px) scale(1); opacity: 0; }
+}
+
+.emoji-scene .em {
+  filter: drop-shadow(0 10px 15px rgba(0,0,0,0.4));
+}
+</style>
+</head>
+<body>
+
+<!-- ── TOP BAR ── -->
+<header class="top-bar">
+  <div class="top-left">
+    <a href="index.html" class="back-btn" title="Home">🏠</a>
+    <span class="genre-emoji" id="genreEmoji">🧚</span>
+    <span class="story-title-bar" id="storyTitleBar">Story</span>
+  </div>
+  <div class="top-right">
+    <button class="music-btn" id="musicBtn" onclick="toggleMusic()" title="Toggle Ambience">🔇</button>
+    <button class="lang-btn active" id="btn-en" onclick="setLang('en')">EN</button>
+    <button class="lang-btn"        id="btn-hi" onclick="setLang('hi')">HI</button>
+    <button class="lang-btn"        id="btn-as" onclick="setLang('as')">AS</button>
+  </div>
+</header>
+
+<!-- ── HELP BUTTON ── -->
+<button class="help-btn" id="helpBtn" onclick="toggleHelp()">🦉</button>
+
+<!-- Help Tooltip -->
+<div class="help-tooltip" id="helpTooltip">
+  <h4>🌟 How to Use</h4>
+  <div class="help-tip">🔊 Tap "Read to Me" to hear the story!</div>
+  <div class="help-tip">⬅️ Swipe or tap arrows for next panel</div>
+  <div class="help-tip">⭐ Complete stories to earn stars!</div>
+  <div class="help-tip">📝 Take quizzes after each story!</div>
+  <button onclick="toggleHelp()" style="margin-top:8px;width:100%;padding:6px;border-radius:8px;background:var(--yellow);border:2px solid var(--dark);font-family:var(--font);font-weight:700;cursor:pointer">Got it! 👍</button>
+</div>
+
+<!-- ── AUDIO CONTROLS ── -->
+<div class="audio-controls">
+  <div class="audio-owl" id="audioOwl">
+    <div class="audio-owl-face">
+      <div class="audio-owl-eye left"></div>
+      <div class="audio-owl-eye right"></div>
+      <div class="audio-owl-beak"></div>
+    </div>
+  </div>
+  
+  <div class="audio-buttons">
+    <button class="audio-btn play" id="btnPlay" onclick="playNarration()" title="Play">▶</button>
+    <button class="audio-btn pause" id="btnPause" onclick="pauseNarration()" title="Pause">⏸</button>
+    <button class="audio-btn stop" id="btnStop" onclick="stopNarration()" title="Stop">⏹</button>
+    <button class="audio-btn replay" id="btnReplay" onclick="replayNarration()" title="Replay">🔁</button>
+  </div>
+  
+  <div class="speed-selector">
+    <button class="speed-btn" data-speed="0.75" onclick="setSpeed(0.75)">0.75×</button>
+    <button class="speed-btn active" data-speed="1" onclick="setSpeed(1)">1×</button>
+    <button class="speed-btn" data-speed="1.25" onclick="setSpeed(1.25)">1.25×</button>
+  </div>
+  
+  <div class="waveform" id="waveform">
+    <div class="wave-bar"></div>
+    <div class="wave-bar"></div>
+    <div class="wave-bar"></div>
+    <div class="wave-bar"></div>
+  </div>
+</div>
+
+<div class="fallback-notice" id="fallbackNotice">
+  🔈 Using browser voice — great for testing!
+</div>
+
+<!-- ── MAIN CONTENT ── -->
+<main class="main-content">
+
+  <div class="panel-wrapper" id="panelWrapper">
+    <div class="panel-card" id="panelCard">
+      <span class="panel-badge" id="panelBadge">Panel 1 / 6</span>
+      <div class="tap-to-hear" id="tapToHear" onclick="playNarration()">
+        🔊 Read to Me
+      </div>
+
+      <canvas id="particleCanvas"></canvas>
+      <div class="magic-hint" id="magicHint">✨ Find the magic!</div>
+      <div id="magicSpotsContainer"></div>
+
+      <div class="emoji-scene" id="emojiScene" onclick="zoomEmojis(this)">
+        <!-- Emojis injected by JS -->
+      </div>
+
+      <div class="speech-bubble" id="speechBubble">…</div>
+
+      <div class="narration-bar" id="narrationBar">…</div>
+    </div>
+  </div>
+
+  <!-- Dot indicators -->
+  <div class="dots-row" id="dotsRow"></div>
+
+  <!-- Navigation -->
+  <div class="nav-row">
+    <button class="nav-btn nav-prev" id="prevBtn" onclick="goPanel(-1)" aria-label="Previous">◀</button>
+    <button class="nav-btn nav-next" id="nextBtn" onclick="handleNext()" aria-label="Next">▶</button>
+  </div>
+
+  <p class="swipe-hint" id="swipeHint">← Swipe or tap arrows →</p>
+</main>
+
+<!-- ── COMPLETION OVERLAY ── -->
+<div class="completion-overlay" id="completionOverlay">
+  <div class="completion-card">
+    <div class="comp-emoji">🎉</div>
+    <div class="comp-title" id="compTitle">Story Complete!</div>
+    <div class="comp-stars">⭐⭐⭐⭐⭐</div>
+    <div class="comp-text" id="compText">Amazing! You earned 5 Stars!</div>
+    <div class="comp-btns">
+      <button class="comp-btn comp-quiz" id="compQuizBtn" onclick="goToQuiz()">Take the Quiz! 🧠</button>
+      <button class="comp-btn comp-library" id="compLibraryBtn" onclick="goToLibrary()">Back to Library 📚</button>
+    </div>
+  </div>
+</div>
+
+<canvas id="confetti-cnv"></canvas>
+
+<!-- ── BOTTOM NAVIGATION ── -->
+<nav class="bottom-nav">
+  <a href="index.html" class="nav-item" id="navHome">
+    <span class="nav-icon">🏠</span>
+    <span>Home</span>
+  </a>
+  <a href="#" class="nav-item" id="navStars" onclick="showStars()">
+    <span class="nav-icon">⭐</span>
+    <span>My Stars</span>
+  </a>
+  <a href="#" class="nav-item" id="navBadges" onclick="showBadges()">
+    <span class="nav-icon">🏆</span>
+    <span>Badges</span>
+  </a>
+  <a href="#" class="nav-item" id="navQuiz" onclick="goToCurrentQuiz()">
+    <span class="nav-icon">🧠</span>
+    <span>Quiz</span>
+  </a>
+</nav>
+
+<!-- ── LIBRARIES ── -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
+<!-- ── CONFIG (ElevenLabs API Key) ── -->
+<script src="config.js"></script>
+
+<script>
+/* ═══════════════════════════════════════
+   STORY DATA
+   ═══════════════════════════════════════ */
+const STORIES = {
+  fairy: {
+    titleKey: 'title_fairy',
+    genreEmoji: '🧚',
+    panels: [
+      { bg:'#FFB3CC', img:'assets/story_panels/fairy_1.jpeg', emojis:['👧','🌲','🌲'],    dk:false, d:'f1d', n:'f1n', spots:[{x:'80%',y:'70%'},{x:'15%',y:'50%'},{x:'50%',y:'30%'}] },
+      { bg:'#FFEE88', img:'assets/story_panels/fairy_2.jpeg', emojis:['👧','🐉','😢'],    dk:false, d:'f2d', n:'f2n', spots:[{x:'20%',y:'40%'},{x:'70%',y:'80%'},{x:'50%',y:'15%'}] },
+      { bg:'#98E8BE', img:'assets/story_panels/fairy_3.jpeg', emojis:['🐉','💔','🎨'],    dk:false, d:'f3d', n:'f3n', spots:[{x:'10%',y:'90%'},{x:'60%',y:'40%'},{x:'85%',y:'20%'}] },
+      { bg:'#87C8F8', img:'assets/story_panels/fairy_4.jpeg', emojis:['👧','💡','🌈'],    dk:false, d:'f4d', n:'f4n', spots:[{x:'30%',y:'30%'},{x:'70%',y:'70%'},{x:'40%',y:'85%'}] },
+      { bg:'#FFB870', img:'assets/story_panels/fairy_5.jpeg', emojis:['🌸','🌺','🌼'],    dk:false, d:'f5d', n:'f5n', spots:[{x:'25%',y:'65%'},{x:'75%',y:'25%'},{x:'15%',y:'15%'}] },
+      { bg:'#C8A0FF', img:'assets/story_panels/fairy_6.jpeg', emojis:['🐉','🌈','✨'],    dk:false, d:'f6d', n:'f6n', spots:[{x:'50%',y:'50%'},{x:'80%',y:'80%'},{x:'20%',y:'20%'}] },
+    ]
+  },
+  myth: {
+    titleKey: 'title_myth',
+    genreEmoji: '🏹',
+    panels: [
+      { bg:'#A8D5A2', img:'assets/story_panels/myth_1.jpeg', emojis:['🧒','🌳','✨'],    dk:false, d:'m1d', n:'m1n', spots:[{x:'20%',y:'50%'},{x:'80%',y:'30%'},{x:'50%',y:'80%'}] },
+      { bg:'#FFE08A', img:'assets/story_panels/myth_2.jpeg', emojis:['🏹','✨','💫'],    dk:false, d:'m2d', n:'m2n', spots:[{x:'10%',y:'20%'},{x:'90%',y:'50%'},{x:'40%',y:'70%'}] },
+      { bg:'#87CEEB', img:'assets/story_panels/myth_3.jpeg', emojis:['🦚','🧒','🌟'],   dk:false, d:'m3d', n:'m3n', spots:[{x:'70%',y:'20%'},{x:'30%',y:'60%'},{x:'80%',y:'80%'}] },
+      { bg:'#F9A8D4', img:'assets/story_panels/myth_4.jpeg', emojis:['🏘️','⛈️','😨'],  dk:false, d:'m4d', n:'m4n', spots:[{x:'15%',y:'15%'},{x:'85%',y:'85%'},{x:'50%',y:'40%'}] },
+      { bg:'#C8B0FF', img:'assets/story_panels/myth_5.jpeg', emojis:['🧒','🏹','⚡'],   dk:false, d:'m5d', n:'m5n', spots:[{x:'40%',y:'40%'},{x:'70%',y:'30%'},{x:'20%',y:'80%'}] },
+      { bg:'#A8D5A2', img:'assets/story_panels/myth_6.jpeg', emojis:['🏘️','☀️','🎉'],  dk:false, d:'m6d', n:'m6n', spots:[{x:'25%',y:'75%'},{x:'60%',y:'20%'},{x:'85%',y:'60%'}] },
+    ]
+  },
+  animals: {
+    titleKey: 'title_animals',
+    genreEmoji: '🦁',
+    panels: [
+      { bg:'#FFB347', img:'assets/story_panels/animals_1.jpeg', emojis:['🦁','🌅','😟'],    dk:false, d:'a1d', n:'a1n', spots:[{x:'30%',y:'80%'},{x:'70%',y:'20%'},{x:'50%',y:'50%'}] },
+      { bg:'#1a1a3e', img:'assets/story_panels/animals_2.jpeg', emojis:['🦁','🍃','😰'],   dk:true,  d:'a2d', n:'a2n', spots:[{x:'15%',y:'60%'},{x:'85%',y:'40%'},{x:'40%',y:'20%'}] },
+      { bg:'#0d2137', img:'assets/story_panels/animals_3.jpeg', emojis:['🦁','✨','🐛'],   dk:true,  d:'a3d', n:'a3n', spots:[{x:'60%',y:'85%'},{x:'20%',y:'30%'},{x:'80%',y:'70%'}] },
+      { bg:'#152040', img:'assets/story_panels/animals_4.jpeg', emojis:['🌙','⭐','🌟'],   dk:true,  d:'a4d', n:'a4n', spots:[{x:'45%',y:'45%'},{x:'75%',y:'85%'},{x:'25%',y:'25%'}] },
+      { bg:'#2d1b69', img:'assets/story_panels/animals_5.jpeg', emojis:['🦁','✨','😊'],   dk:true,  d:'a5d', n:'a5n', spots:[{x:'10%',y:'10%'},{x:'90%',y:'90%'},{x:'50%',y:'50%'}] },
+      { bg:'#1a3a5c', img:'assets/story_panels/animals_6.jpeg', emojis:['🦁','🌕','🎉'],   dk:true,  d:'a6d', n:'a6n', spots:[{x:'35%',y:'65%'},{x:'65%',y:'35%'},{x:'80%',y:'80%'}] },
+    ]
+  },
+  space: {
+    titleKey: 'title_space',
+    genreEmoji: '🚀',
+    panels: [
+      { bg:'#0a0a2e', img:'assets/story_panels/space_1.jpeg', emojis:['🤖','🚀','🌑'],   dk:true,  d:'s1d', n:'s1n', spots:[{x:'20%',y:'30%'},{x:'80%',y:'70%'},{x:'50%',y:'20%'}] },
+      { bg:'#0d1b4b', img:'assets/story_panels/space_2.jpeg', emojis:['🤖','☄️','🔭'],  dk:true,  d:'s2d', n:'s2n', spots:[{x:'70%',y:'40%'},{x:'30%',y:'80%'},{x:'85%',y:'15%'}] },
+      { bg:'#1a0a3e', img:'assets/story_panels/space_3.jpeg', emojis:['👽','🤖','🪐'],  dk:true,  d:'s3d', n:'s3n', spots:[{x:'40%',y:'60%'},{x:'60%',y:'40%'},{x:'10%',y:'90%'}] },
+      { bg:'#0a1a2e', img:'assets/story_panels/space_4.jpeg', emojis:['👽','🕳️','🌕'], dk:true,  d:'s4d', n:'s4n', spots:[{x:'50%',y:'50%'},{x:'15%',y:'15%'},{x:'85%',y:'85%'}] },
+      { bg:'#1a0a4e', img:'assets/story_panels/space_5.jpeg', emojis:['🤖','🌕','💤'],  dk:true,  d:'s5d', n:'s5n', spots:[{x:'80%',y:'30%'},{x:'20%',y:'70%'},{x:'50%',y:'80%'}] },
+      { bg:'#0a2a4e', img:'assets/story_panels/space_6.jpeg', emojis:['🤖','🌕','🪐'],  dk:true,  d:'s6d', n:'s6n', spots:[{x:'30%',y:'20%'},{x:'70%',y:'80%'},{x:'50%',y:'50%'}] },
+    ]
+  }
+};
+
+/* ═══════════════════════════════════════
+   TRANSLATIONS
+   ═══════════════════════════════════════ */
+const T = {
+  en: {
+    title_fairy:   'Zara and the Rainbow Dragon',
+    title_myth:    'Arjun and the Magic Bow',
+    title_animals: 'Leo the Lion',
+    title_space:   'Robo and the Missing Moon',
+    panel_lbl: 'Panel', panel_of: '/',
+    comp_title: 'Story Complete!',
+    comp_text:  'Amazing! You earned 5 Stars! ⭐',
+    comp_quiz:  'Take the Quiz! 🧠',
+    comp_lib:   'Back to Library 📚',
+    swipe_hint: '← Swipe or tap arrows →',
+    tap_to_hear: '🔊 Read to Me',
+    f1d: '"Where is all the colour? This forest feels so sad!"',
+    f1n: 'One bright morning, brave Zara set off into the grey forest...',
+    f2d: '"Dragon! Why are you crying?"',
+    f2n: 'Deep in the forest she heard a strange, sad sobbing sound...',
+    f3d: '"I lost ALL my colours! Now I can\'t paint the sky!"',
+    f3n: 'The dragon was grey and dull — all its rainbow magic was gone.',
+    f4d: '"Don\'t worry, Dragon! We will find your colours together!"',
+    f4n: 'Zara had a brilliant plan — they would search every corner together!',
+    f5d: '"Red from roses, yellow from sunflowers, blue from the sky!"',
+    f5n: 'Together they gathered colours from every flower in the meadow.',
+    f6d: '"Thank you, Zara! The sky is more beautiful than ever!"',
+    f6n: 'The dragon roared with joy and painted the most dazzling rainbow ever seen!',
+    m1d: '"What is that glowing light between the trees?"',
+    m1n: 'Young Arjun was wandering through the ancient, misty forest...',
+    m2d: '"A bow of pure light! It feels warm and magical in my hands!"',
+    m2n: 'Half-buried in old roots was a magnificent, glowing bow!',
+    m3d: '"You are the chosen one, Arjun! Your village needs your help!"',
+    m3n: 'Suddenly a peacock with golden feathers spoke in a gentle voice!',
+    m4d: '"The terrible storm monster will destroy everything!"',
+    m4n: 'A dark, roaring storm was rolling fast towards his village!',
+    m5d: '"For my village — I am NOT afraid!"',
+    m5n: 'Arjun aimed the magic bow with all his heart and courage!',
+    m6d: '"Arjun saved us! Three cheers for our brave young hero!"',
+    m6n: 'The arrow split the dark clouds and warm golden sunshine filled the sky!',
+    a1d: '"Oh no... it\'s getting dark. I really don\'t like the dark!"',
+    a1n: 'Every evening, little Leo trembled as the bright sun went down...',
+    a2d: '"It\'s so dark! What if monsters are hiding out there?"',
+    a2n: 'Leo squeezed his eyes shut and hid under the biggest leaf he could find.',
+    a3d: '"Hello! I\'m Diya the firefly! Why are you hiding, big lion?"',
+    a3n: 'A tiny, warm light blinked nearby — it was Diya the firefly!',
+    a4d: '"Look, Leo! The night has glittering stars and soft moonlight!"',
+    a4n: 'Diya lit up the night sky, revealing all its magical wonders.',
+    a5d: '"You\'re right, Diya! I just never looked properly before!"',
+    a5n: 'Together they walked through the night jungle without any fear at all.',
+    a6d: '"I LOVE the night now! ROARRRRR!"',
+    a6n: 'From that day on, Leo became the bravest, boldest lion in the whole jungle!',
+    s1d: '"Beep boop! Planet Zorg\'s moon has gone missing! I must find it!"',
+    s1n: 'On a starry night, little robot Robo spotted something very wrong...',
+    s2d: '"Moon? Are you hiding somewhere behind the asteroids?"',
+    s2n: 'Robo searched the whole asteroid belt — but found no moon there.',
+    s3d: '"Excuse me, have you seen a moon floating by this way?"',
+    s3n: 'Robo met some very friendly aliens near the purple planet.',
+    s4d: '"Yes! We saw it! It floated near the Sleepy Nebula!"',
+    s4n: 'The aliens pointed to the very far edge of the galaxy!',
+    s5d: '"There you are, little moon! You wandered too far while napping!"',
+    s5n: 'There it was — the moon had drifted off while taking a cosy nap!',
+    s6d: '"Welcome home, Moon! Planet Zorg missed you SO much!"',
+    s6n: 'Robo carefully guided the moon safely home to cheers across the galaxy!',
+  },
+  hi: {
+    title_fairy:   'ज़ारा और इंद्रधनुष ड्रेगन',
+    title_myth:    'अर्जुन और जादुई धनुष',
+    title_animals: 'लियो शेर',
+    title_space:   'रोबो और खोया हुआ चाँद',
+    panel_lbl: 'पैनल', panel_of: '/',
+    comp_title: 'कहानी पूरी हुई!',
+    comp_text:  'शाबाश! तुमने 5 सितारे कमाए! ⭐',
+    comp_quiz:  'क्विज़ दो! 🧠',
+    comp_lib:   'पुस्तकालय वापस 📚',
+    swipe_hint: '← स्वाइप करो या तीर दबाओ →',
+    tap_to_hear: '🔊 मुझे सुनाओ',
+    f1d: '"सारे रंग कहाँ गए? यह जंगल बहुत उदास लग रहा है!"',
+    f1n: 'एक सुबह, बहादुर ज़ारा रंगहीन जंगल में चल पड़ी...',
+    f2d: '"ड्रेगन! तुम क्यों रो रहे हो?"',
+    f2n: 'जंगल की गहराई में उसे एक अजीब, उदास आवाज़ सुनाई दी...',
+    f3d: '"मेरे सारे रंग खो गए! अब मैं आकाश नहीं रंग सकता!"',
+    f3n: 'ड्रेगन भूरे रंग का और उदास था — उसका सारा इंद्रधनुषी जादू गायब हो गया था।',
+    f4d: '"चिंता मत करो, ड्रेगन! हम मिलकर तुम्हारे रंग ढूंढेंगे!"',
+    f4n: 'ज़ारा के मन में एक शानदार योजना आई — वे मिलकर खोज करेंगे!',
+    f5d: '"गुलाब से लाल, सूरजमुखी से पीला, आकाश से नीला!"',
+    f5n: 'दोनों ने मिलकर मैदान के हर फूल से रंग इकट्ठे किए।',
+    f6d: '"धन्यवाद, ज़ारा! आकाश पहले से भी अधिक सुंदर हो गया!"',
+    f6n: 'ड्रेगन ने खुशी से दहाड़ लगाई और अब तक का सबसे चमकीला इंद्रधनुष बनाया!',
+    m1d: '"पेड़ों के बीच यह चमकती रोशनी क्या है?"',
+    m1n: 'युवा अर्जुन धुंध भरे प्राचीन जंगल में भटक रहा था...',
+    m2d: '"शुद्ध रोशनी का धनुष! यह मेरे हाथों में गर्म और जादुई लगता है!"',
+    m2n: 'पुरानी जड़ों में आधा दबा एक शानदार, चमकता धनुष था!',
+    m3d: '"तुम्हें चुना गया है, अर्जुन! तुम्हारे गाँव को तुम्हारी ज़रूरत है!"',
+    m3n: 'अचानक सोने के पंखों वाला एक मोर कोमल आवाज़ में बोला!',
+    m4d: '"भयानक तूफ़ान का राक्षस सब कुछ नष्ट कर देगा!"',
+    m4n: 'एक काला, गरजता तूफ़ान उसके गाँव की ओर तेज़ी से बढ़ रहा था!',
+    m5d: '"अपने गाँव के लिए — मुझे डर नहीं है!"',
+    m5n: 'अर्जुन ने पूरे दिल और साहस से जादुई धनुष पर निशाना साधा!',
+    m6d: '"अर्जुन ने हमें बचाया! हमारे बहादुर नायक की जय हो!"',
+    m6n: 'तीर ने काले बादलों को चीर दिया और गर्म सुनहरी धूप छा गई!',
+    a1d: '"ओह नहीं... अंधेरा हो रहा है। मुझे सच में अंधेरे से डर लगता है!"',
+    a1n: 'हर शाम, छोटा लियो तब काँपने लगता था जब चमकता सूरज डूबता था...',
+    a2d: '"इतना अंधेरा! क्या बाहर कहीं राक्षस छुपे हैं?"',
+    a2n: 'लियो ने आँखें बंद कर लीं और सबसे बड़े पत्ते के नीचे छुप गया।',
+    a3d: '"नमस्ते! मैं दिया जुगनू हूँ! तुम क्यों छुपे हो, बड़े शेर?"',
+    a3n: 'पास में एक छोटी, गर्म रोशनी टिमटिमाई — वह दिया जुगनू थी!',
+    a4d: '"देखो, लियो! रात में चमकते तारे और नरम चाँदनी है!"',
+    a4n: 'दिया ने रात के आकाश को रोशन किया और उसके सभी जादुई चमत्कार दिखाए।',
+    a5d: '"तुम सही हो, दिया! मैंने पहले कभी ध्यान से नहीं देखा था!"',
+    a5n: 'दोनों ने बिना किसी डर के रात के जंगल में साथ चले।',
+    a6d: '"मुझे अब रात बहुत पसंद है! दहाड़!"',
+    a6n: 'उस दिन से, लियो पूरे जंगल का सबसे बहादुर और निडर शेर बन गया!',
+    s1d: '"बीप बूप! ज़ोर्ग ग्रह का चाँद गायब हो गया है! मुझे ढूंढना होगा!"',
+    s1n: 'तारों भरी एक रात, रोबो ने देखा कि कुछ बहुत गलत था...',
+    s2d: '"चाँद? क्या तुम क्षुद्रग्रहों के पीछे कहीं छुपे हो?"',
+    s2n: 'रोबो ने पूरी क्षुद्रग्रह पट्टी खोजी — पर चाँद नहीं मिला।',
+    s3d: '"माफ़ करना, क्या तुमने कोई चाँद इस तरफ से तैरते देखा?"',
+    s3n: 'रोबो की मुलाकात बैंगनी ग्रह के पास कुछ बहुत दोस्ताना एलियन से हुई।',
+    s4d: '"हाँ! हमने देखा! वह स्लीपी नेबुला के पास था!"',
+    s4n: 'एलियन ने आकाशगंगा के बहुत दूर के छोर की ओर इशारा किया!',
+    s5d: '"तुम यहाँ हो, छोटे चाँद! झपकी लेते-लेते बहुत दूर चले आए!"',
+    s5n: 'वहाँ था — चाँद आरामदायक झपकी लेते हुए दूर भटक गया था!',
+    s6d: '"घर वापस आओ, चाँद! ज़ोर्ग ग्रह ने तुम्हें बहुत याद किया!"',
+    s6n: 'रोबो ने सावधानी से चाँद को सुरक्षित घर वापस गाइड किया!',
+  },
+  as: {
+    title_fairy:   'যাৰা আৰু ৰামধেনু ড্ৰেগন',
+    title_myth:    'অৰ্জুন আৰু যাদুকৰী ধনু',
+    title_animals: 'লিঅ\' সিংহ',
+    title_space:   'ৰোবো আৰু হেৰোৱা চন্দ্ৰ',
+    panel_lbl: 'পেনেল', panel_of: '/',
+    comp_title: 'কাহিনী সম্পূৰ্ণ!',
+    comp_text:  'চাবাচ! তুমি ৫টা তৰা পালা! ⭐',
+    comp_quiz:  'প্ৰশ্নোত্তৰ দিয়া! 🧠',
+    comp_lib:   'পুথিভঁৰাললৈ যোৱা 📚',
+    swipe_hint: '← চোৱাইপ কৰা বা কাঁড় টিপা →',
+    tap_to_hear: '🔊 মোক শুনাও',
+    f1d: '"সকলো ৰং ক\'ত গ\'ল? এই বনটো বৰ দুখী যেন লাগিছে!"',
+    f1n: 'এখন পুৱাতে, সাহসী যাৰা ৰংহীন বনলৈ গুচি গ\'ল...',
+    f2d: '"ড্ৰেগন! তুমি কিয় কান্দিছা?"',
+    f2n: 'বনৰ গভীৰতাত তাই এটা অদ্ভুত, দুখী শব্দ শুনিলে...',
+    f3d: '"মোৰ সকলো ৰং হেৰাই গ\'ল! এতিয়া মই আকাশ ৰং কৰিব নোৱাৰোঁ!"',
+    f3n: 'ড্ৰেগনটো ধোঁৱা ৰঙৰ আৰু দুখী আছিল — তাৰ সকলো যাদু গুচি গৈছিল।',
+    f4d: '"চিন্তা নকৰিবা, ড্ৰেগন! আমি একেলগে তোমাৰ ৰং বিচাৰিম!"',
+    f4n: 'যাৰাৰ মনলৈ এটা চমৎকাৰ পৰিকল্পনা আহিল!',
+    f5d: '"গোলাপৰ পৰা ৰঙা, সূৰ্যমুখীৰ পৰা হালধীয়া, আকাশৰ পৰা নীলা!"',
+    f5n: 'দুয়োজনে মিলি পথাৰৰ প্ৰতিটো ফুলৰ পৰা ৰং সংগ্ৰহ কৰিলে।',
+    f6d: '"ধন্যবাদ, যাৰা! আকাশখন আগতকৈও বেছি সুন্দৰ হৈ গ\'ল!"',
+    f6n: 'ড্ৰেগনটোৱে আনন্দেৰে হুংকাৰ দিলে আৰু এতিয়ালৈকে দেখা আটাইতকৈ সুন্দৰ ৰামধেনু আঁকিলে!',
+    m1d: '"গছৰ মাজত এই জিলিকি থকা পোহৰ কি?"',
+    m1n: 'সৰু অৰ্জুন কুঁৱলী ভৰা প্ৰাচীন বনত ঘূৰি আছিল...',
+    m2d: '"বিশুদ্ধ পোহৰৰ ধনু! মোৰ হাততো গৰম আৰু যাদুকৰী লাগিছে!"',
+    m2n: 'পুৰণি শিপাৰ মাজত আধা পোতা এটা ধুনীয়া জিলিকি থকা ধনু আছিল!',
+    m3d: '"তুমি বাছনি হৈছা, অৰ্জুন! তোমাৰ গাঁওখনক তোমাৰ প্ৰয়োজন!"',
+    m3n: 'হঠাতে সোণালী পাখিৰ এটা ময়ূৰে কোমল মাতেৰে কথা ক\'লে!',
+    m4d: '"ভয়াবহ ধুমুহাৰ দানৱে সকলো ধ্বংস কৰিব!"',
+    m4n: 'এটা কলা, গৰ্জমান ধুমুহা তেওঁৰ গাঁওলৈ দ্ৰুতভাৱে আগবাঢ়ি আহিছিল!',
+    m5d: '"মোৰ গাঁৱৰ বাবে — মই ভয় নাপাওঁ!"',
+    m5n: 'অৰ্জুনে সমস্ত হৃদয় আৰু সাহস লৈ যাদুকৰী ধনুৰে লক্ষ্য বিন্ধিলে!',
+    m6d: '"অৰ্জুনে আমাক ৰক্ষা কৰিলে! আমাৰ সাহসী বীৰৰ জয়!"',
+    m6n: 'কাঁড়ডালে কলা মেঘ চিৰি দিলে আৰু উষ্ণ সোণালী ৰ\'দ আহিল!',
+    a1d: '"অ\' নহয়... আন্ধাৰ হৈ আহিছে। মই সঁচাকৈ আন্ধাৰক ভয় পাওঁ!"',
+    a1n: 'প্ৰতি সন্ধিয়া, সৰু লিঅ\' উজ্জ্বল সূৰ্য ডুবোৱেই কঁপিবলৈ লৈছিল...',
+    a2d: '"ইমান আন্ধাৰ! যদি বাহিৰত দানৱ লুকাই থাকে?"',
+    a2n: 'লিঅ\'ৱে চকু মুদি ল\'লে আৰু আটাইতকৈ ডাঙৰ পাতৰ তলত লুকাই ল\'লে।',
+    a3d: '"নমস্কাৰ! মই দিয়া জোনাকী পৰুৱা! তুমি কিয় লুকাই আছা?"',
+    a3n: 'কাষতে এটা সৰু, উষ্ণ পোহৰ জিলিকিলে — সেয়া আছিল দিয়া জোনাকী!',
+    a4d: '"চোৱা, লিঅ\'! ৰাতি জিলিকি থকা তৰা আৰু কোমল জোনৰ পোহৰ আছে!"',
+    a4n: 'দিয়াই ৰাতিৰ আকাশ পোহৰাই দিলে আৰু ইয়াৰ সকলো যাদুকৰী আশ্চৰ্য দেখুৱালে।',
+    a5d: '"তুমি ঠিকেই কৈছা, দিয়া! মই আগতে কেতিয়াও মন দি চোৱা নাছিলোঁ!"',
+    a5n: 'দুয়োজনে কোনো ভয় নোহোৱাকৈ ৰাতিৰ জংঘললেদি খোজ কাঢ়িলে।',
+    a6d: '"মই এতিয়া ৰাতি বৰ ভালপাওঁ! হুংকাৰ!"',
+    a6n: 'সেই দিনৰ পৰা, লিঅ\' গোটেই জংঘলৰ আটাইতকৈ সাহসী, নিৰ্ভীক সিংহ হৈ পৰিল!',
+    s1d: '"বিপ বুপ! জৰ্গ গ্ৰহৰ চন্দ্ৰ হেৰাই গ\'ল! মই বিচাৰিব লাগিব!"',
+    s1n: 'তৰা ভৰা এখন ৰাতি, সৰু ৰোবোৱে দেখিলে যে কিবা ভুল হৈছে...',
+    s2d: '"চন্দ্ৰ? তুমি কি গ্ৰহাণুৰ আঁৰত লুকাই আছা?"',
+    s2n: 'ৰোবোৱে গোটেই গ্ৰহাণু পট্টি সন্ধান কৰিলে — কিন্তু চন্দ্ৰ নাপালে।',
+    s3d: '"মাপ কৰিব, তুমি কোনো চন্দ্ৰ এই ফালেদি ভাহি যোৱা দেখিছানে?"',
+    s3n: 'ৰোবোৱে বেঙুনীয়া গ্ৰহৰ কাষত কিছু বন্ধুত্বপূৰ্ণ এলিয়েনৰ সাক্ষাৎ পালে।',
+    s4d: '"হয়! আমি দেখিছিলোঁ! ই স্লিপি নেবুলাৰ কাষতে আছিল!"',
+    s4n: 'এলিয়েনসকলে গেলেক্সীৰ বহু দূৰ মূৰলৈ আঙুলিয়ালে!',
+    s5d: '"তুমি ইয়াতে আছা, সৰু চন্দ্ৰ! টোপনি মাৰোতে বৰ দূৰলৈ গুচি আহিছিলা!"',
+    s5n: 'তাকে পোৱা গ\'ল — চন্দ্ৰ আৰামদায়ক টোপনি মাৰোতে আঁতৰি গৈছিল!',
+    s6d: '"ঘৰলৈ স্বাগতম, চন্দ্ৰ! জৰ্গ গ্ৰহে তোমাক বৰ মনত পেলাইছিল!"',
+    s6n: 'ৰোবোৱে সাৱধানে চন্দ্ৰক নিৰাপদে ঘৰলৈ ফিৰাই আনিলে!',
+  }
+};
+
+/* ═══════════════════════════════════════
+   STATE
+   ═══════════════════════════════════════ */
+const state = {
+  genre:              'fairy',
+  lang:               'en',
+  currentPanel:       0,
+  completionTriggered:false,
+  // Audio state
+  isPlaying:          false,
+  currentSpeed:       1,
+  utterance:          null,
+  currentAudio:       null,  // For ElevenLabs audio element
+};
+
+/* ── Parse URL ── */
+(function parseURL(){
+  const g = new URLSearchParams(window.location.search).get('genre');
+  if (g && STORIES[g]) state.genre = g;
+})();
+
+/* ═══════════════════════════════════════
+   AUDIO FUNCTIONS (Enhanced Natural TTS)
+   ═══════════════════════════════════════ */
+const TTS_LANG = { en: "en-US", hi: "hi-IN", as: "as-IN" };
+
+// Enhanced voice preferences - prefers natural, friendly voices
+const VOICE_PREFERENCES = {
+  en: [
+    // Premium natural voices (highest priority)
+    { name: /samantha/i, weight: 15 },           // macOS - excellent natural quality
+    { name: /karen/i, weight: 14 },              // macOS - very clear, friendly
+    { name: /daniel/i, weight: 13 },             // macOS - great male voice
+    { name: /tessa/i, weight: 13 },              // macOS - excellent for kids
+    { name: /moira/i, weight: 12 },              // macOS - Irish, very natural
+    { name: /veena/i, weight: 11 },              // Windows - clear Indian English
+    { name: /zira/i, weight: 11 },               // Windows - good quality
+    { name: /david/i, weight: 10 },              // Windows - male voice
+    { name: /hazel/i, weight: 10 },              // Windows - British, clear
+    { name: /susan/i, weight: 10 },              // Windows - good general purpose
+    { name: /catherine/i, weight: 10 },          // macOS - Australian, friendly
+    { name: /fred/i, weight: 9 },                // macOS - male, distinctive
+    // Google voices (usually high quality)
+    { name: /google.*en-us.*(neural|wavenet)/i, weight: 14 },
+    { name: /google.*en-gb.*(neural|wavenet)/i, weight: 13 },
+    { name: /google.*premium/i, weight: 12 },
+    { name: /google/i, weight: 9 },
+    // Microsoft voices
+    { name: /microsoft.*(jenny|aria|guy)/i, weight: 11 },  // Azure neural
+    { name: /microsoft.*(sonya|michelle)/i, weight: 10 },  // Good female voices
+    { name: /microsoft.*(mark|james)/i, weight: 9 },       // Good male voices
+    { name: /microsoft.*natural/i, weight: 10 },
+    { name: /microsoft/i, weight: 5 },
+    // General quality indicators
+    { name: /neural/i, weight: 12 },
+    { name: /waveNet/i, weight: 11 },
+    { name: /premium/i, weight: 10 },
+    { name: /enhanced/i, weight: 9 },
+    { name: /natural/i, weight: 8 },
+    // Avoid robotic/lower quality voices
+    { name: /robot/i, weight: -20 },
+    { name: /synth/i, weight: -10 },
+    { name: /compact/i, weight: -8 },
+    { name: /low.*quality/i, weight: -15 },
+  ],
+  hi: [
+    { name: /google.*hindi.*(neural|wavenet)/i, weight: 14 },
+    { name: /google.*hindi/i, weight: 10 },
+    { name: /microsoft.*hindi.*(neural|natural)/i, weight: 12 },
+    { name: /microsoft.*hindi/i, weight: 7 },
+    { name: /swara/i, weight: 10 },              // Hindi female voice
+    { name: /hi/i, weight: 5 },
+  ],
+  as: [
+    { name: /google.*(neural|wavenet)/i, weight: 12 },
+    { name: /google/i, weight: 8 },
+    { name: /microsoft.*natural/i, weight: 9 },
+    { name: /microsoft/i, weight: 5 },
+  ]
+};
+
+// Natural speech enhancements - add pauses for storytelling
+function enhanceTextForSpeech(text) {
+  if (!text) return '';
+  
+  return text
+    // Keep ellipsis as is (natural pause)
+    .replace(/\.\.\./g, '…')
+    // Add longer pause after exclamations (excitement)
+    .replace(/!/g, '! ')
+    // Add pause after questions
+    .replace(/\?/g, '? ')
+    // Add slight pause after periods
+    .replace(/([.])/g, '$1 ')
+    // Add micro-pause after commas for natural rhythm
+    .replace(/,/g, ', ')
+    // Ensure spaces after colons and semicolons
+    .replace(/:/g, ': ')
+    .replace(/;/g, '; ')
+    // Clean up multiple spaces
+    .replace(/\s+/g, ' ')
+    // Trim whitespace
+    .trim();
+}
+
+function selectBestVoice(voices, lang) {
+  if (!voices || voices.length === 0) return null;
+  
+  const prefs = VOICE_PREFERENCES[lang] || [];
+  const langCode = TTS_LANG[lang] || 'en-US';
+  
+  // Score each voice
+  const scored = voices.map(voice => {
+    let score = 0;
+    
+    // Check exact language match (e.g., en-US for English)
+    if (voice.lang === langCode) {
+      score += 60;
+    } else if (voice.lang.startsWith(lang)) {
+      score += 40;
+    }
+    
+    // Apply preferences
+    prefs.forEach(pref => {
+      if (pref.name.test(voice.name)) {
+        score += pref.weight;
+      }
+    });
+    
+    // Prefer local voices (faster, more reliable, work offline)
+    if (voice.localService) {
+      score += 15;
+    } else {
+      score -= 5;  // Slight penalty for cloud voices (network dependency)
+    }
+    
+    // Prefer voices that are not the default (usually better quality)
+    if (!voice.default) {
+      score += 3;
+    }
+    
+    // Slight preference for female voices (studies show children respond better)
+    const femaleNames = /\b(samantha|karen|tessa|moira|veena|zira|hazel|susan|catherine|jenny|aria|sonya|michelle|swara|linda|amy|emma|victoria)\b/i;
+    if (femaleNames.test(voice.name)) {
+      score += 5;
+    }
+    
+    return { voice, score };
+  });
+  
+  // Sort by score and return best
+  scored.sort((a, b) => b.score - a.score);
+  
+  // Log selected voice for debugging
+  if (scored.length > 0 && scored[0].score > 0) {
+    console.log(`Selected voice: ${scored[0].voice.name} (score: ${scored[0].score})`);
+  }
+  
+  return scored[0]?.voice || null;
+}
+
+/* ═══════════════════════════════════════
+   ELEVENLABS TTS INTEGRATION
+   ═══════════════════════════════════════ */
+
+// Check if ElevenLabs is configured for a language
+function shouldUseElevenLabs(lang) {
+  if (typeof CONFIG === 'undefined') return false;
+  if (!CONFIG.USE_ELEVENLABS) return false;
+  if (!CONFIG.ELEVENLABS_API_KEY) return false;
+  
+  // Always use ElevenLabs for Assamese (no native browser support)
+  if (lang === 'as') return true;
+  
+  // Use ElevenLabs if a voice ID is configured for this language
+  const voiceId = CONFIG.VOICE_IDS[lang];
+  return voiceId && voiceId.length > 0;
+}
+
+// Play audio using ElevenLabs API
+async function playElevenLabs(text, lang) {
+  if (!text) return;
+  
+  const voiceId = CONFIG.VOICE_IDS[lang] || CONFIG.VOICE_IDS.en;
+  const apiKey = CONFIG.ELEVENLABS_API_KEY;
+  
+  // Show loading state
+  document.getElementById('audioOwl').classList.add('bouncing');
+  document.getElementById('waveform').classList.add('playing');
+  
+  try {
+    const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
+      method: 'POST',
+      headers: {
+        'xi-api-key': apiKey,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        text: text,
+        model_id: 'eleven_multilingual_v2',
+        voice_settings: {
+          stability: 0.5,
+          similarity_boost: 0.75,
+          style: 0.3,
+          use_speaker_boost: true
+        }
+      }),
+    });
+    
+    if (!response.ok) {
+      throw new Error(`ElevenLabs error: ${response.status}`);
+    }
+    
+    const audioBlob = await response.blob();
+    const audioUrl = URL.createObjectURL(audioBlob);
+    const audio = new Audio(audioUrl);
+    
+    state.currentAudio = audio;
+    
+    audio.onplay = () => {
+      state.isPlaying = true;
+      document.getElementById('audioOwl').classList.add('bouncing');
+      document.getElementById('waveform').classList.add('playing');
+      document.getElementById('fallbackNotice').classList.add('show');
+      playPop();
+    };
+    
+    audio.onended = () => {
+      state.isPlaying = false;
+      document.getElementById('audioOwl').classList.remove('bouncing');
+      document.getElementById('waveform').classList.remove('playing');
+      URL.revokeObjectURL(audioUrl);
+      playFanfare();
+    };
+    
+    audio.onerror = () => {
+      state.isPlaying = false;
+      document.getElementById('audioOwl').classList.remove('bouncing');
+      document.getElementById('waveform').classList.remove('playing');
+      URL.revokeObjectURL(audioUrl);
+      // Fallback to browser TTS
+      playBrowserTTS(text, lang);
+    };
+    
+    await audio.play();
+    
+  } catch (error) {
+    console.error('ElevenLabs TTS error:', error);
+    state.isPlaying = false;
+    document.getElementById('audioOwl').classList.remove('bouncing');
+    document.getElementById('waveform').classList.remove('playing');
+    // Fallback to browser TTS
+    playBrowserTTS(text, lang);
+  }
+}
+
+// Browser TTS fallback
+function playBrowserTTS(rawText, lang) {
+  if (!window.speechSynthesis) {
+    alert("Your browser doesn't support text-to-speech!");
+    return;
+  }
+  
+  stopNarration();
+  
+  // Enhance text for more natural speech
+  const text = enhanceTextForSpeech(rawText);
+  
+  state.utterance = new SpeechSynthesisUtterance(text);
+  state.utterance.lang = TTS_LANG[lang] || "en-US";
+  
+  // Better rate for kids - slightly slower for clarity
+  state.utterance.rate = Math.min(state.currentSpeed * 0.95, 1.0);
+  
+  // Select best voice
+  const voices = window.speechSynthesis.getVoices();
+  const bestVoice = selectBestVoice(voices, lang);
+  if (bestVoice) {
+    state.utterance.voice = bestVoice;
+  }
+  
+  // Natural pitch variation - slightly higher for friendliness
+  state.utterance.pitch = lang === 'en' ? 1.1 : 1.0;
+  
+  // Volume
+  state.utterance.volume = 1.0;
+  
+  state.utterance.onstart = () => {
+    state.isPlaying = true;
+    document.getElementById('audioOwl').classList.add('bouncing');
+    document.getElementById('waveform').classList.add('playing');
+    document.getElementById('fallbackNotice').classList.add('show');
+    playPop();
+  };
+  
+  state.utterance.onend = () => {
+    state.isPlaying = false;
+    document.getElementById('audioOwl').classList.remove('bouncing');
+    document.getElementById('waveform').classList.remove('playing');
+    playFanfare();
+  };
+  
+  state.utterance.onerror = (e) => {
+    console.log('TTS Error:', e.error);
+    // Fallback - try without voice selection
+    if (bestVoice) {
+      state.utterance.voice = null;
+      window.speechSynthesis.speak(state.utterance);
+    }
+  };
+  
+  window.speechSynthesis.speak(state.utterance);
+}
+
+function playNarration() {
+  const rawText = T[state.lang][STORIES[state.genre].panels[state.currentPanel].n];
+  if (!rawText) return;
+  
+  stopNarration();
+  
+  // Use ElevenLabs for Assamese or if configured for current language
+  if (shouldUseElevenLabs(state.lang)) {
+    playElevenLabs(rawText, state.lang);
+  } else {
+    playBrowserTTS(rawText, state.lang);
+  }
+}
+
+function pauseNarration() {
+  // Handle ElevenLabs audio
+  if (state.currentAudio) {
+    if (state.isPlaying) {
+      state.currentAudio.pause();
+      state.isPlaying = false;
+      document.getElementById('audioOwl').classList.remove('bouncing');
+      document.getElementById('waveform').classList.remove('playing');
+    } else {
+      state.currentAudio.play();
+      state.isPlaying = true;
+      document.getElementById('audioOwl').classList.add('bouncing');
+      document.getElementById('waveform').classList.add('playing');
+    }
+    return;
+  }
+  
+  // Handle browser TTS
+  if (window.speechSynthesis) {
+    if (state.isPlaying) {
+      window.speechSynthesis.pause();
+      state.isPlaying = false;
+      document.getElementById('audioOwl').classList.remove('bouncing');
+      document.getElementById('waveform').classList.remove('playing');
+    } else {
+      window.speechSynthesis.resume();
+      state.isPlaying = true;
+      document.getElementById('audioOwl').classList.add('bouncing');
+      document.getElementById('waveform').classList.add('playing');
+    }
+  }
+}
+
+function stopNarration() {
+  // Stop ElevenLabs audio if playing
+  if (state.currentAudio) {
+    state.currentAudio.pause();
+    state.currentAudio.currentTime = 0;
+    state.currentAudio = null;
+  }
+  
+  // Stop browser TTS
+  if (window.speechSynthesis) {
+    window.speechSynthesis.cancel();
+  }
+  
+  state.isPlaying = false;
+  document.getElementById('audioOwl').classList.remove('bouncing');
+  document.getElementById('waveform').classList.remove('playing');
+}
+
+function replayNarration() {
+  stopNarration();
+  setTimeout(playNarration, 100);
+}
+
+function setSpeed(speed) {
+  state.currentSpeed = speed;
+  document.querySelectorAll('.speed-btn').forEach(btn => {
+    btn.classList.toggle('active', parseFloat(btn.dataset.speed) === speed);
+  });
+  if (state.utterance) {
+    state.utterance.rate = speed;
+  }
+}
+
+// Preload voices
+if (window.speechSynthesis) {
+  window.speechSynthesis.getVoices();
+  window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+}
+
+/* ═══════════════════════════════════════
+   SOUND EFFECTS (Web Audio API)
+   ═══════════════════════════════════════ */
+let _audioCtx = null;
+function getACtx(){
+  if(!_audioCtx) _audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+  return _audioCtx;
+}
+
+function playPop(){
+  if(state.muted) return;
+  try {
+    const ctx = getACtx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(560, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(220, ctx.currentTime + .08);
+    gain.gain.setValueAtTime(.3, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(.001, ctx.currentTime + .08);
+    osc.start(ctx.currentTime); osc.stop(ctx.currentTime + .08);
+  } catch(e){}
+}
+
+function playFanfare(){
+  try {
+    const ctx = getACtx();
+    [523,659,784,1047].forEach((f,i)=>{
+      const osc = ctx.createOscillator();
+      const g = ctx.createGain();
+      osc.connect(g); g.connect(ctx.destination);
+      osc.type = 'sine'; osc.frequency.value = f;
+      const t0 = ctx.currentTime + i * .16;
+      g.gain.setValueAtTime(0, t0);
+      g.gain.linearRampToValueAtTime(.22, t0 + .06);
+      g.gain.exponentialRampToValueAtTime(.001, t0 + .35);
+      osc.start(t0); osc.stop(t0 + .38);
+    });
+  } catch(e){}
+}
+
+/* ═══════════════════════════════════════
+   SENSORY SYSTEM: AMBIENT MUSIC
+   ═══════════════════════════════════════ */
+let musicOscillators = [];
+let musicGain = null;
+let isMusicPlaying = false;
+
+function toggleMusic() {
+  isMusicPlaying = !isMusicPlaying;
+  const btn = document.getElementById('musicBtn');
+  if(isMusicPlaying) {
+    btn.classList.add('playing');
+    btn.textContent = '🎵';
+    playAmbientMusic(state.genre);
+  } else {
+    btn.classList.remove('playing');
+    btn.textContent = '🔇';
+    stopAmbientMusic();
+  }
+}
+
+function stopAmbientMusic() {
+  if (musicGain) {
+    musicGain.gain.setValueAtTime(musicGain.gain.value, getACtx().currentTime);
+    musicGain.gain.exponentialRampToValueAtTime(0.001, getACtx().currentTime + 1);
+    setTimeout(() => {
+      musicOscillators.forEach(o => { try{o.stop();}catch(e){} });
+      musicOscillators = [];
+      if(musicGain) musicGain.disconnect();
+      musicGain = null;
+    }, 1000);
+  }
+}
+
+function playAmbientMusic(genre) {
+  stopAmbientMusic();
+  if(!isMusicPlaying) return;
+  const ctx = getACtx();
+  musicGain = ctx.createGain();
+  musicGain.gain.value = 0.001;
+  musicGain.gain.linearRampToValueAtTime(0.08, ctx.currentTime + 2);
+  musicGain.connect(ctx.destination);
+
+  if (genre === 'fairy') {
+    const freqs = [392, 440, 523, 587, 659];
+    const playChime = () => {
+      if(!isMusicPlaying) return;
+      const osc = ctx.createOscillator();
+      const g = ctx.createGain();
+      osc.type = Math.random() > 0.5 ? 'sine' : 'triangle';
+      osc.frequency.value = freqs[Math.floor(Math.random() * freqs.length)] * 2;
+      osc.connect(g); g.connect(musicGain);
+      g.gain.setValueAtTime(0, ctx.currentTime);
+      g.gain.linearRampToValueAtTime(0.1, ctx.currentTime + 0.1);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 3);
+      osc.start(); osc.stop(ctx.currentTime + 3);
+      setTimeout(playChime, 1000 + Math.random() * 3000);
+    };
+    playChime();
+  } else if (genre === 'myth') {
+    const osc = ctx.createOscillator(); osc.type = 'sawtooth'; osc.frequency.value = 110;
+    const filter = ctx.createBiquadFilter(); filter.type = 'lowpass'; filter.frequency.value = 300;
+    osc.connect(filter); filter.connect(musicGain); osc.start(); musicOscillators.push(osc);
+  } else if (genre === 'animals') {
+    const osc = ctx.createOscillator(); osc.type = 'triangle'; osc.frequency.value = 130;
+    const lfo = ctx.createOscillator(); lfo.type = 'sine'; lfo.frequency.value = 0.5;
+    const lfoGain = ctx.createGain(); lfoGain.gain.value = 5;
+    lfo.connect(lfoGain); lfoGain.connect(osc.frequency);
+    osc.connect(musicGain); lfo.start(); osc.start();
+    musicOscillators.push(lfo, osc);
+  } else if (genre === 'space') {
+    [146.83, 174.61, 220.00].forEach(f => {
+      const osc = ctx.createOscillator(); osc.type = 'sine'; osc.frequency.value = f;
+      osc.connect(musicGain); osc.start(); musicOscillators.push(osc);
+    });
+  }
+}
+
+/* ═══════════════════════════════════════
+   SENSORY SYSTEM: TRANSITION SFX
+   ═══════════════════════════════════════ */
+function playTransitionSFX(genre) {
+  if (state.muted) return;
+  try {
+    const ctx = getACtx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    
+    if (genre === 'fairy') {
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(800, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(1600, ctx.currentTime + 0.2);
+      gain.gain.setValueAtTime(0.2, ctx.currentTime);
+      gain.gain.linearRampToValueAtTime(0.001, ctx.currentTime + 0.2);
+      osc.start(); osc.stop(ctx.currentTime + 0.2);
+    } else if (genre === 'myth') {
+      osc.type = 'sawtooth';
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.setValueAtTime(2000, ctx.currentTime);
+      filter.frequency.exponentialRampToValueAtTime(200, ctx.currentTime + 0.3);
+      osc.frequency.setValueAtTime(150, ctx.currentTime);
+      osc.disconnect(); osc.connect(filter); filter.connect(gain);
+      gain.gain.setValueAtTime(0.3, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+      osc.start(); osc.stop(ctx.currentTime + 0.3);
+    } else if (genre === 'animals') {
+      osc.type = 'square';
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(400, ctx.currentTime);
+      filter.frequency.linearRampToValueAtTime(50, ctx.currentTime + 0.2);
+      osc.frequency.setValueAtTime(100, ctx.currentTime);
+      osc.disconnect(); osc.connect(filter); filter.connect(gain);
+      gain.gain.setValueAtTime(0.3, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
+      osc.start(); osc.stop(ctx.currentTime + 0.2);
+    } else { // space
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(1000, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(100, ctx.currentTime + 0.4);
+      gain.gain.setValueAtTime(0.2, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+      osc.start(); osc.stop(ctx.currentTime + 0.4);
+    }
+  } catch(e) { playPop(); }
+}
+
+/* ═══════════════════════════════════════
+   SENSORY SYSTEM: PARTICLES
+   ═══════════════════════════════════════ */
+let particleAnimFrame = null;
+let particles = [];
+function initParticles(genre) {
+  const canvas = document.getElementById('particleCanvas');
+  const ctx = canvas.getContext('2d');
+  if(!canvas || !ctx) return;
+  const resize = () => {
+    canvas.width = canvas.parentElement.offsetWidth;
+    canvas.height = canvas.parentElement.offsetHeight;
+  };
+  resize(); window.onresize = resize;
+  
+  if(particleAnimFrame) cancelAnimationFrame(particleAnimFrame);
+  particles = [];
+  
+  const emojis = {
+    fairy: ['✨','⭐','💖'],
+    myth: ['🪷','🍃','💫'],
+    animals: ['🐾','🍃'],
+    space: ['☄️','⭐','🌟']
+  }[genre] || ['✨'];
+
+  for(let i=0; i<15; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 1,
+      vy: genre==='fairy' ? -1 - Math.random() : (genre==='myth' ? 1+Math.random() : Math.random()-0.5),
+      size: 10 + Math.random()*15,
+      char: emojis[Math.floor(Math.random()*emojis.length)],
+      alpha: Math.random()
+    });
+  }
+
+  function loop() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    particles.forEach(p => {
+      if(genre === 'space') { p.vx = 2; p.vy = 2; }
+      else if(genre === 'myth') { p.vx = Math.sin(Date.now()/1000 + p.size)*2; }
+      else if(genre === 'animals') { p.vx = 1; p.vy = 1; }
+      
+      p.x += p.vx; p.y += p.vy;
+      p.alpha += 0.02 * (Math.random() - 0.5);
+      if(p.alpha < 0) p.alpha = 0; if(p.alpha > 0.8) p.alpha = 0.8;
+      
+      if(p.x < -50) p.x = canvas.width + 50;
+      if(p.x > canvas.width + 50) p.x = -50;
+      if(p.y < -50) p.y = canvas.height + 50;
+      if(p.y > canvas.height + 50) p.y = -50;
+      
+      ctx.globalAlpha = p.alpha;
+      ctx.font = `${p.size}px Arial`;
+      ctx.fillText(p.char, p.x, p.y);
+    });
+    particleAnimFrame = requestAnimationFrame(loop);
+  }
+  loop();
+}
+
+/* ═══════════════════════════════════════
+   SENSORY SYSTEM: MAGIC SPOTS
+   ═══════════════════════════════════════ */
+function renderMagicSpots(spots) {
+  const container = document.getElementById('magicSpotsContainer');
+  if(!container) return;
+  container.innerHTML = '';
+  spots.forEach((spot, i) => {
+    const el = document.createElement('div');
+    el.className = 'magic-spot';
+    el.style.left = spot.x;
+    el.style.top = spot.y;
+    el.onclick = (e) => {
+      e.stopPropagation();
+      fireMagicBurst(e.clientX, e.clientY, state.genre);
+      playTransitionSFX(state.genre);
+    };
+    container.appendChild(el);
+  });
+}
+
+function showMagicHint() {
+  const hint = document.getElementById('magicHint');
+  if(hint) {
+    hint.classList.add('show');
+    setTimeout(() => hint.classList.remove('show'), 3000);
+  }
+}
+
+function fireMagicBurst(clientX, clientY, genre) {
+  if(!window.gsap) return;
+  const emojis = {
+    fairy: ['✨','💖','🌟'],
+    myth: ['💫','🪷','✨'],
+    animals: ['🐾','🌿','✨'],
+    space: ['🚀','☄️','⭐']
+  }[genre] || ['✨'];
+  
+  for(let i=0; i<8; i++) {
+    const el = document.createElement('div');
+    el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    el.style.position = 'fixed';
+    el.style.left = clientX + 'px';
+    el.style.top = clientY + 'px';
+    el.style.fontSize = '24px';
+    el.style.pointerEvents = 'none';
+    el.style.zIndex = '9999';
+    document.body.appendChild(el);
+    
+    gsap.to(el, {
+      x: (Math.random() - 0.5) * 150,
+      y: (Math.random() - 0.5) * 150 - 50,
+      rotation: Math.random() * 360,
+      opacity: 0,
+      scale: 0.5 + Math.random(),
+      duration: 0.6 + Math.random() * 0.4,
+      ease: 'power2.out',
+      onComplete: () => el.remove()
+    });
+  }
+}
+
+/* ═══════════════════════════════════════
+   HELP TOGGLE
+   ═══════════════════════════════════════ */
+function toggleHelp() {
+  document.getElementById('helpTooltip').classList.toggle('show');
+}
+
+/* ═══════════════════════════════════════
+   HELPERS
+   ═══════════════════════════════════════ */
+function t(k){ return T[state.lang][k] || T.en[k] || k; }
+
+function setActiveLangBtns(){
+  ['en','hi','as'].forEach(l=>{
+    document.getElementById('btn-'+l).classList.toggle('active', l===state.lang);
+  });
+}
+
+/* ═══════════════════════════════════════
+   RENDER
+   ═══════════════════════════════════════ */
+function renderPanel(idx){
+  const story = STORIES[state.genre];
+  const p = story.panels[idx];
+  const card = document.getElementById('panelCard');
+
+  card.style.backgroundColor = p.bg;
+  if(p.dk){
+    card.style.borderColor = 'rgba(255,255,255,.18)';
+    card.style.boxShadow = '6px 7px 0 rgba(255,255,255,.12), 0 12px 40px rgba(0,0,0,.55)';
+  } else {
+    card.style.borderColor = 'var(--dark)';
+    card.style.boxShadow = '6px 7px 0 var(--dark), 0 12px 40px rgba(0,0,0,.18)';
+  }
+
+  if (p.img) {
+    card.style.backgroundImage = `linear-gradient(to bottom, transparent 30%, rgba(0,0,0,0.6) 100%), url('${p.img}')`;
+    card.style.backgroundSize = 'cover';
+    card.style.backgroundPosition = 'center';
+    card.classList.add('has-image');
+  } else {
+    card.style.backgroundImage = 'none';
+    card.classList.remove('has-image');
+  }
+
+  document.getElementById('panelBadge').textContent =
+    `${t('panel_lbl')} ${idx+1} ${t('panel_of')} ${story.panels.length}`;
+
+  document.getElementById('tapToHear').textContent = t('tap_to_hear');
+
+  if (p.img) {
+    document.getElementById('emojiScene').innerHTML = '';
+  } else {
+    document.getElementById('emojiScene').innerHTML = p.emojis.map(e=>`<span class="em">${e}</span>`).join('');
+  }
+
+  // Engage ambient systems
+  initParticles(state.genre);
+  renderMagicSpots(p.spots || []);
+  showMagicHint();
+
+  document.getElementById('speechBubble').textContent = t(p.d);
+  document.getElementById('narrationBar').textContent = t(p.n);
+
+  document.getElementById('prevBtn').disabled = idx === 0;
+
+  const nb = document.getElementById('nextBtn');
+  if(idx === story.panels.length - 1){
+    nb.innerHTML = '🎉';
+    nb.classList.add('finish');
+    nb.disabled = false;
+  } else {
+    nb.innerHTML = '▶';
+    nb.classList.remove('finish');
+    nb.disabled = false;
+  }
+
+  renderDots(idx);
+}
+
+function renderDots(active){
+  const story = STORIES[state.genre];
+  const row = document.getElementById('dotsRow');
+  row.innerHTML = '';
+  for(let i=0;i<story.panels.length;i++){
+    const d = document.createElement('span');
+    d.className = 'dot' + (i===active?' active':'');
+    d.setAttribute('role','button');
+    d.setAttribute('aria-label',`Panel ${i+1}`);
+    d.onclick = ()=>jumpPanel(i);
+    row.appendChild(d);
+  }
+}
+
+function renderTopBar(){
+  const story = STORIES[state.genre];
+  document.getElementById('storyTitleBar').textContent = t(story.titleKey);
+  document.getElementById('genreEmoji').textContent = story.genreEmoji;
+}
+
+function renderCompletionText(){
+  document.getElementById('compTitle').textContent = t('comp_title');
+  document.getElementById('compText').textContent = t('comp_text');
+  document.getElementById('compQuizBtn').textContent = t('comp_quiz');
+  document.getElementById('compLibraryBtn').textContent = t('comp_lib');
+}
+
+function renderAll(){
+  renderTopBar();
+  renderPanel(state.currentPanel);
+  renderCompletionText();
+  document.getElementById('swipeHint').textContent = t('swipe_hint');
+  setActiveLangBtns();
+}
+
+/* ═══════════════════════════════════════
+   NAVIGATION
+   ═══════════════════════════════════════ */
+function goPanel(dir){
+  if(state.animating) return;
+  const next = state.currentPanel + dir;
+  const story = STORIES[state.genre];
+  if(next < 0 || next >= story.panels.length) return;
+  flipPanel(next, dir);
+}
+
+function handleNext(){
+  if(state.animating) return;
+  const story = STORIES[state.genre];
+  if(state.currentPanel >= story.panels.length - 1){
+    triggerCompletion();
+  } else {
+    goPanel(1);
+  }
+}
+
+function jumpPanel(idx){
+  if(state.animating || idx===state.currentPanel) return;
+  const dir = idx > state.currentPanel ? 1 : -1;
+  flipPanel(idx, dir);
+}
+
+/* ═══════════════════════════════════════
+   ANIMATION
+   ═══════════════════════════════════════ */
+function flipPanel(newIdx, dir){
+  if(state.animating) return;
+  state.animating = true;
+  stopNarration();
+
+  playTransitionSFX(state.genre);
+
+  const card = document.getElementById('panelCard');
+  const exitCls  = dir>0 ? 'anim-exit-left'  : 'anim-exit-right';
+  const enterCls = dir>0 ? 'anim-enter-right' : 'anim-enter-left';
+
+  card.classList.add(exitCls);
+
+  setTimeout(()=>{
+    state.currentPanel = newIdx;
+    card.classList.remove(exitCls);
+    card.classList.add(enterCls);
+
+    renderPanel(newIdx);
+
+    setTimeout(()=>{
+      card.classList.remove(enterCls);
+      card.classList.add('anim-settled');
+
+      setTimeout(()=>{
+        card.classList.remove('anim-settled');
+        state.animating = false;
+      }, 450);
+    }, 50);
+
+  }, 400);
+}
+
+function zoomEmojis(el){
+  if(!window.gsap) return;
+  gsap.killTweensOf(el);
+  gsap.to(el, {
+    scale: 1.2,
+    duration: .28,
+    ease: 'back.out(2)',
+    onComplete(){
+      gsap.to(el,{ scale:1, duration:.5, delay:.85, ease:'bounce.out' });
+    }
+  });
+}
+
+/* ═══════════════════════════════════════
+   COMPLETION
+   ═══════════════════════════════════════ */
+function triggerCompletion(){
+  if(state.completionTriggered) return;
+  state.completionTriggered = true;
+  stopNarration();
+
+  try {
+    const prev = parseInt(localStorage.getItem('kidsDC_stars') || '0');
+    localStorage.setItem('kidsDC_stars', prev + 5);
+  } catch(e) {}
+
+  renderCompletionText();
+  document.getElementById('completionOverlay').classList.add('show');
+
+  playFanfare();
+
+  if(window.confetti){
+    const cnv = document.getElementById('confetti-cnv');
+    const fire = confetti.create(cnv,{resize:true, useWorker:false});
+    fire({ particleCount:140, spread:75, origin:{y:.45},
+           colors:['#FF6B9D','#FFD93D','#4D96FF','#6BCB77','#FF9F43','#A78BFA'] });
+    setTimeout(()=>{
+      fire({ particleCount:70, spread:55, origin:{y:.5,x:.15},
+             colors:['#FF6B9D','#FFD93D','#4D96FF'] });
+      fire({ particleCount:70, spread:55, origin:{y:.5,x:.85},
+             colors:['#6BCB77','#FF9F43','#A78BFA'] });
+    }, 500);
+  }
+}
+
+function goToQuiz()    { window.location.href = `quiz-rewards.html?genre=${state.genre}`; }
+function goToLibrary() { window.location.href = 'index.html'; }
+function goToCurrentQuiz() { goToQuiz(); }
+
+/* ═══════════════════════════════════════
+   BOTTOM NAV ACTIONS
+   ═══════════════════════════════════════ */
+function showStars() {
+  try {
+    const stars = localStorage.getItem('kidsDC_stars') || '0';
+    alert(`⭐ You have ${stars} stars!\nKeep reading to earn more!`);
+  } catch(e) {
+    alert('⭐ You have 0 stars!\nKeep reading to earn more!');
+  }
+  return false;
+}
+
+function showBadges() {
+  window.location.href = 'quiz-rewards.html';
+  return false;
+}
+
+/* ═══════════════════════════════════════
+   LANGUAGE
+   ═══════════════════════════════════════ */
+function setLang(l){
+  state.lang = l;
+  document.documentElement.lang = l === 'en' ? 'en' : l === 'hi' ? 'hi' : 'as';
+  try { localStorage.setItem('kidsDC_lang', l); } catch(e) {}
+  renderAll();
+}
+
+/* ═══════════════════════════════════════
+   KEYBOARD + SWIPE
+   ═══════════════════════════════════════ */
+document.addEventListener('keydown', e=>{
+  if(e.key==='ArrowRight'||e.key==='ArrowDown') handleNext();
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp')   goPanel(-1);
+  if(e.key===' ') { e.preventDefault(); playNarration(); }
+});
+
+let _tx = 0, _ty = 0;
+document.addEventListener('touchstart', e=>{ _tx=e.touches[0].clientX; _ty=e.touches[0].clientY; },{passive:true});
+document.addEventListener('touchend', e=>{
+  const dx = _tx - e.changedTouches[0].clientX;
+  const dy = _ty - e.changedTouches[0].clientY;
+  if(Math.abs(dx)>Math.abs(dy) && Math.abs(dx)>48){
+    dx>0 ? handleNext() : goPanel(-1);
+  }
+},{passive:true});
+
+/* ═══════════════════════════════════════
+   INIT
+   ═══════════════════════════════════════ */
+try {
+  const savedLang = localStorage.getItem('kidsDC_lang');
+  if (savedLang) state.lang = savedLang;
+} catch(e) {}
+
+renderAll();
+
+// Close help when clicking outside
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('#helpBtn') && !e.target.closest('#helpTooltip')) {
+    document.getElementById('helpTooltip').classList.remove('show');
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Kids Digital Comic 📚✨</title>
+<meta name="description" content="Kids Digital Comic — magical panel-by-panel stories, audio narration, quizzes and rewards for curious young readers." />
+<meta property="og:title" content="Kids Digital Comic 📚✨" />
+<meta property="og:description" content="Magical panel-by-panel stories, audio narration, quizzes and rewards for curious young readers." />
+<meta property="og:type" content="website" />
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+/* ============================================================
+   CSS VARIABLES & RESET
+   ============================================================ */
+:root {
+  --pink:   #FF1493;
+  --yellow: #FFEA00;
+  --blue:   #00E5FF;
+  --mint:   #00FF7F;
+  --orange: #FF5E00;
+  --white:  #FFFFFF;
+  --dark:   #2B0054;
+  --radius: 24px;
+  --shadow: 0 8px 32px rgba(43,0,84,0.15);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Baloo 2', cursive;
+  background: var(--white);
+  color: var(--dark);
+  overflow-x: hidden;
+  min-height: 100vh;
+  padding-bottom: 80px; /* Space for bottom nav */
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background-image: radial-gradient(var(--dark) 15%, transparent 16%);
+  background-size: 24px 24px;
+  opacity: 0.08;
+  pointer-events: none;
+}
+
+/* ============================================================
+   ANIMATED GRADIENT BACKGROUND
+   ============================================================ */
+.bg-gradient {
+  position: fixed;
+  inset: 0;
+  z-index: -3;
+  background: linear-gradient(135deg, var(--pink), var(--yellow), var(--blue), var(--mint), var(--orange));
+  background-size: 400% 400%;
+  animation: gradientCycle 5s ease infinite;
+  opacity: 0.8;
+}
+@keyframes gradientCycle {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ============================================================
+   FLOATING EMOJI PARTICLES
+   ============================================================ */
+.particles {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+.particle {
+  position: absolute;
+  bottom: -60px;
+  font-size: 1.6rem;
+  animation: floatUp linear infinite;
+  opacity: 0.7;
+  user-select: none;
+}
+.particle:nth-child(1)  { left: 5%;  animation-duration: 7s;  animation-delay: 0s;   }
+.particle:nth-child(2)  { left: 12%; animation-duration: 9s;  animation-delay: 1.2s; }
+.particle:nth-child(3)  { left: 22%; animation-duration: 8s;  animation-delay: 2.5s; }
+.particle:nth-child(4)  { left: 33%; animation-duration: 6s;  animation-delay: 0.7s; }
+.particle:nth-child(5)  { left: 45%; animation-duration: 10s; animation-delay: 3.1s; }
+.particle:nth-child(6)  { left: 57%; animation-duration: 7.5s;animation-delay: 1.8s; }
+.particle:nth-child(7)  { left: 67%; animation-duration: 8.5s;animation-delay: 0.4s; }
+.particle:nth-child(8)  { left: 76%; animation-duration: 6.5s;animation-delay: 2.2s; }
+.particle:nth-child(9)  { left: 85%; animation-duration: 9.5s;animation-delay: 0.9s; }
+.particle:nth-child(10) { left: 93%; animation-duration: 7s;  animation-delay: 3.8s; }
+@keyframes floatUp {
+  0%   { transform: translateY(0) rotate(0deg); opacity: 0; }
+  10%  { opacity: 0.7; }
+  90%  { opacity: 0.7; }
+  100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 18px 20px;
+  background: rgba(255,255,255,0.82);
+  backdrop-filter: blur(12px);
+  border-bottom: 5px solid var(--dark);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 4px 0 rgba(43,0,84,0.15);
+}
+.logo {
+  font-size: clamp(1.2rem, 3.5vw, 1.8rem);
+  font-weight: 900;
+  background: linear-gradient(90deg, var(--pink), var(--orange), var(--blue));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  -webkit-text-stroke: 1.5px var(--dark);
+  filter: drop-shadow(3px 4px 0px var(--dark));
+  letter-spacing: -0.5px;
+  line-height: 1.1;
+  animation: bounceIn 0.9s cubic-bezier(.36,1.8,.5,1) both;
+}
+@keyframes bounceIn {
+  0%   { transform: scale(0.3) translateY(-40px); opacity: 0; }
+  60%  { transform: scale(1.08) translateY(6px); opacity: 1; }
+  80%  { transform: scale(0.96); }
+  100% { transform: scale(1) translateY(0); }
+}
+.lang-switcher {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.lang-btn {
+  border: 4px solid var(--dark);
+  border-radius: 50px;
+  padding: 6px 14px;
+  font-family: 'Baloo 2', cursive;
+  font-size: .9rem;
+  font-weight: 700;
+  cursor: pointer;
+  background: var(--white);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 4px 4px 0 var(--dark);
+}
+.lang-btn:hover, .lang-btn.active {
+  background: var(--yellow);
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 var(--dark);
+}
+.lang-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 var(--dark);
+}
+
+/* ============================================================
+   HERO SECTION
+   ============================================================ */
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 40px 20px 30px;
+  text-align: center;
+}
+
+/* --- CSS OWL MASCOT --- */
+.owl-wrap {
+  position: relative;
+  width: 160px;
+  height: 180px;
+  cursor: pointer;
+}
+.owl-wrap:hover .owl-wing-left  { transform: rotate(-35deg); }
+.owl-wrap:hover .owl-wing-right { transform: rotate(35deg); }
+
+.owl-body {
+  position: absolute;
+  bottom: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 100px; height: 120px;
+  background: radial-gradient(ellipse at 40% 30%, #a78bfa, #7c3aed 70%);
+  border-radius: 60px 60px 50px 50px;
+  border: 4px solid #5b21b6;
+  box-shadow: 0 8px 24px rgba(124,58,237,0.3);
+}
+.owl-cape {
+  position: absolute;
+  bottom: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 116px; height: 70px;
+  background: linear-gradient(160deg, var(--pink) 0%, var(--orange) 100%);
+  border-radius: 0 0 60px 60px;
+  border: 4px solid #c2185b;
+  z-index: 0;
+}
+.owl-head {
+  position: absolute;
+  top: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 90px; height: 85px;
+  background: radial-gradient(ellipse at 45% 35%, #c4b5fd, #7c3aed 80%);
+  border-radius: 55px 55px 45px 45px;
+  border: 4px solid #5b21b6;
+  z-index: 2;
+}
+.owl-tuft {
+  position: absolute;
+  top: -14px;
+  width: 18px; height: 24px;
+  background: #7c3aed;
+  border-radius: 50% 50% 30% 30%;
+  border: 3px solid #5b21b6;
+}
+.owl-tuft.left  { left: 14px; transform: rotate(-15deg); }
+.owl-tuft.right { right: 14px; transform: rotate(15deg); }
+.owl-eyes {
+  position: absolute;
+  top: 22px; left: 50%;
+  transform: translateX(-50%);
+  display: flex; gap: 12px;
+}
+.owl-eye {
+  width: 24px; height: 24px;
+  background: #fff;
+  border-radius: 50%;
+  border: 3px solid #1A0533;
+  position: relative;
+  overflow: hidden;
+}
+.owl-eye::before {
+  content: '';
+  position: absolute;
+  top: 4px; left: 5px;
+  width: 12px; height: 12px;
+  background: #1A0533;
+  border-radius: 50%;
+}
+.owl-eye::after {
+  content: '';
+  position: absolute;
+  top: 5px; left: 12px;
+  width: 4px; height: 4px;
+  background: #fff;
+  border-radius: 50%;
+}
+.owl-eye.blink::before { height: 2px; top: 11px; border-radius: 50px; }
+.owl-beak {
+  position: absolute;
+  top: 48px; left: 50%;
+  transform: translateX(-50%);
+  width: 0; height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 14px solid var(--orange);
+}
+.owl-wing-left, .owl-wing-right {
+  position: absolute;
+  top: 80px;
+  width: 44px; height: 70px;
+  background: linear-gradient(160deg, #a78bfa, #6d28d9);
+  border: 3px solid #5b21b6;
+  border-radius: 50% 30% 50% 30%;
+  transition: transform 0.35s cubic-bezier(.36,1.8,.5,1);
+  transform-origin: top center;
+  z-index: 1;
+}
+.owl-wing-left  { left: -14px; border-radius: 30% 50% 30% 50%; transform-origin: top right; }
+.owl-wing-right { right: -14px; transform-origin: top left; }
+.owl-feet {
+  position: absolute;
+  bottom: -12px; left: 50%;
+  transform: translateX(-50%);
+  display: flex; gap: 16px;
+}
+.owl-foot {
+  width: 22px; height: 18px;
+  background: var(--orange);
+  border-radius: 0 0 12px 12px;
+  border: 3px solid #c2700a;
+  position: relative;
+}
+.owl-foot::before, .owl-foot::after {
+  content: '';
+  position: absolute;
+  bottom: -7px;
+  width: 7px; height: 12px;
+  background: var(--orange);
+  border-radius: 0 0 6px 6px;
+  border: 2px solid #c2700a;
+}
+.owl-foot::before { left: 0; }
+.owl-foot::after  { right: 0; }
+.owl-star {
+  position: absolute;
+  color: #FFD93D;
+  font-size: 1rem;
+}
+
+.tagline {
+  font-size: clamp(1.4rem, 4vw, 2.2rem);
+  font-weight: 900;
+  color: #ffffff;
+  -webkit-text-stroke: 2px var(--dark);
+  max-width: 550px;
+  line-height: 1.3;
+  text-shadow: 4px 5px 0 var(--dark);
+}
+.start-btn {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--pink), var(--orange));
+  color: #fff;
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.25rem;
+  font-weight: 800;
+  padding: 14px 36px;
+  border: 4px solid var(--dark);
+  border-radius: 50px;
+  cursor: pointer;
+  box-shadow: 6px 8px 0 var(--dark);
+  animation: pulse 2s ease-in-out infinite;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+}
+.start-btn:hover { 
+  transform: translate(-3px, -3px) scale(1.05);
+  box-shadow: 9px 11px 0 var(--dark);
+  animation-play-state: paused; 
+}
+.start-btn:active {
+  transform: translate(3px, 3px) scale(1.05);
+  box-shadow: 3px 5px 0 var(--dark);
+}
+@keyframes pulse {
+  0%, 100% { transform: scale(1) rotate(-1deg); }
+  50%       { transform: scale(1.05) rotate(2deg); }
+}
+
+/* ============================================================
+   CONTINUE READING (if progress exists)
+   ============================================================ */
+.continue-section {
+  max-width: 600px;
+  margin: 0 auto 20px;
+  padding: 0 20px;
+  display: none;
+}
+.continue-section.show { display: block; }
+.continue-card {
+  background: linear-gradient(135deg, var(--yellow), var(--orange));
+  border: 5px solid var(--dark);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: 6px 8px 0 var(--dark);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.continue-card:hover { transform: translateY(-4px); }
+.continue-info { flex: 1; }
+.continue-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--dark);
+  margin-bottom: 4px;
+}
+.continue-sub {
+  font-size: .9rem;
+  font-weight: 600;
+  color: #555;
+}
+.continue-emoji {
+  font-size: 2.5rem;
+}
+.continue-btn {
+  background: var(--dark);
+  color: var(--yellow);
+  border: none;
+  border-radius: 50px;
+  padding: 10px 20px;
+  font-family: var(--font);
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 4px 4px 0 rgba(0,0,0,0.3);
+}
+
+/* ============================================================
+   STORY CARD GRID
+   ============================================================ */
+.section-title {
+  text-align: center;
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  font-weight: 900;
+  padding: 12px 20px 0;
+  color: #ffffff;
+  -webkit-text-stroke: 2px var(--dark);
+  text-shadow: 4px 5px 0 var(--dark);
+}
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+  padding: 24px 20px 40px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+.story-card {
+  background-color: #ffffff;
+  border-radius: var(--radius);
+  display: flex;
+  flex-direction: column;
+  box-shadow: 8px 10px 0 var(--dark);
+  border: 5px solid var(--dark);
+  cursor: pointer;
+  transition: transform 0.28s cubic-bezier(.36,1.8,.5,1), box-shadow 0.28s cubic-bezier(.36,1.8,.5,1);
+  opacity: 0;
+  position: relative;
+  overflow: hidden;
+  padding: 0; /* Padding is handled by children */
+}
+
+.card-image {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background-size: cover;
+  background-position: center;
+  border-bottom: 5px solid var(--dark);
+}
+
+.card-content-wrap {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.story-card:hover { transform: translate(-4px, -6px); box-shadow: 12px 16px 0 var(--dark); }
+.story-card:active { transform: translate(4px, 4px); box-shadow: 4px 6px 0 var(--dark); }
+
+.card-fairy   { background-image: url('assets/cover_fairy.png'); }
+.card-myth    { background-image: url('assets/cover_myth.png'); }
+.card-animals { background-image: url('assets/cover_animals.png'); }
+.card-space   { background-image: url('assets/cover_space.png'); }
+
+.card-emoji { 
+  font-size: 2.2rem; 
+  margin-top: -12px;
+  margin-bottom: 4px;
+}
+.story-card:hover .card-emoji {
+  animation: wiggle 0.4s ease-in-out infinite alternate;
+}
+@keyframes wiggle {
+  0% { transform: rotate(-12deg) scale(1.15); }
+  100% { transform: rotate(12deg) scale(1.15); }
+}
+.card-title {
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: var(--dark);
+  line-height: 1.2;
+}
+.card-desc {
+  font-size: 0.85rem;
+  color: #555;
+  font-weight: 600;
+  line-height: 1.4;
+  margin-bottom: 12px;
+}
+.card-btn {
+  background: var(--pink);
+  color: #ffffff;
+  border: 3px solid var(--dark);
+  padding: 10px 24px;
+  border-radius: 20px;
+  font-family: var(--font);
+  font-weight: 800;
+  font-size: 1rem;
+  text-decoration: none;
+  display: inline-block;
+  transition: all 0.2s;
+  box-shadow: 4px 5px 0 var(--dark);
+}
+.card-btn:hover { 
+  transform: translate(-2px, -2px); 
+  box-shadow: 6px 7px 0 var(--dark);
+}
+.card-btn:active { 
+  transform: translate(2px, 2px); 
+  box-shadow: 1px 2px 0 var(--dark);
+}
+.card-btn:hover { 
+  transform: translate(-2px, -2px); 
+  box-shadow: 6px 7px 0 var(--dark);
+}
+.card-btn:active {
+  transform: translate(2px, 2px); 
+  box-shadow: 2px 3px 0 var(--dark);
+}
+.card-fairy   .card-btn { background: var(--pink); }
+.card-myth    .card-btn { background: var(--orange); }
+.card-animals .card-btn { background: var(--mint); color: var(--dark); }
+.card-space   .card-btn { background: var(--blue); color: var(--dark); }
+
+/* ============================================================
+   PROGRESS BAR
+   ============================================================ */
+.progress-section {
+  max-width: 600px;
+  margin: 0 auto 40px;
+  padding: 24px 20px;
+  background: rgba(255,255,255,0.95);
+  border-radius: var(--radius);
+  border: 5px solid var(--dark);
+  box-shadow: 8px 10px 0 var(--dark);
+  text-align: center;
+}
+.progress-label {
+  font-size: 1.4rem;
+  font-weight: 900;
+  margin-bottom: 14px;
+  color: var(--yellow);
+  -webkit-text-stroke: 1.5px var(--dark);
+  text-shadow: 3px 4px 0 var(--dark);
+}
+.progress-track {
+  width: 100%;
+  height: 26px;
+  background: #f0e8c8;
+  border-radius: 50px;
+  overflow: hidden;
+  border: 4px solid var(--dark);
+  box-shadow: inset 0 3px 6px rgba(43,0,84,0.3);
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--yellow), var(--orange), var(--pink));
+  border-radius: 50px;
+  transition: width 1.2s cubic-bezier(.36,1.5,.5,1);
+  position: relative;
+  overflow: hidden;
+}
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.35) 50%, transparent 100%);
+  animation: shimmer 2s linear infinite;
+}
+@keyframes shimmer {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+.progress-tip {
+  margin-top: 10px;
+  font-size: .9rem;
+  font-weight: 600;
+  color: #888;
+}
+
+/* ============================================================
+   BOTTOM NAVIGATION BAR
+   ============================================================ */
+.bottom-nav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: linear-gradient(135deg, var(--dark) 0%, #1a0033 100%);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 10px 8px;
+  box-shadow: 0 -4px 20px rgba(0,0,0,.3);
+  z-index: 200;
+}
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  text-decoration: none;
+  color: #aaa;
+  font-family: 'Baloo 2', cursive;
+  font-size: .65rem;
+  font-weight: 700;
+  transition: all .2s;
+  padding: 4px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+}
+.nav-item:hover { color: #fff; }
+.nav-item.active { color: var(--yellow); }
+.nav-item .nav-icon {
+  font-size: 1.5rem;
+  transition: transform .2s;
+}
+.nav-item:hover .nav-icon { transform: scale(1.15); }
+.nav-item.active .nav-icon { transform: scale(1.2); }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer {
+  background: rgba(255,255,255,0.90);
+  border-top: 4px solid var(--mint);
+  padding: 24px 20px;
+  text-align: center;
+}
+.footer-text {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--dark);
+  min-height: 24px;
+  transition: opacity 0.5s;
+}
+.footer-bottom {
+  margin-top: 8px;
+  font-size: .85rem;
+  color: #aaa;
+  font-weight: 600;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 600px) {
+  header { padding: 12px 16px; }
+  .cards-grid { padding: 16px 14px 32px; gap: 16px; }
+  .progress-section { margin: 0 14px 32px; padding: 18px 16px; }
+  footer { padding: 16px 14px; }
+  .hero { padding: 28px 14px 24px; }
+}
+</style>
+</head>
+<body>
+
+<div class="bg-gradient"></div>
+
+<div class="particles" aria-hidden="true">
+  <span class="particle">🌟</span>
+  <span class="particle">💫</span>
+  <span class="particle">⭐</span>
+  <span class="particle">🎈</span>
+  <span class="particle">🌟</span>
+  <span class="particle">⭐</span>
+  <span class="particle">💫</span>
+  <span class="particle">🎈</span>
+  <span class="particle">🌟</span>
+  <span class="particle">💫</span>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">Kids Digital Comic 📚✨</div>
+  <div class="lang-switcher" role="group" aria-label="Language switcher">
+    <button class="lang-btn active" data-lang="en" onclick="setLang('en')">🇬🇧 EN</button>
+    <button class="lang-btn" data-lang="hi" onclick="setLang('hi')">🇮🇳 हिन्दी</button>
+    <button class="lang-btn" data-lang="as" onclick="setLang('as')">🇮🇳 অসমীয়া</button>
+  </div>
+</header>
+
+<!-- HERO SECTION -->
+<section class="hero">
+  <div class="owl-wrap" title="Hoot! I'm Ollie the Reading Owl 🦉" aria-label="Friendly owl mascot">
+    <div class="owl-cape">
+      <span class="owl-star" style="top:6px;left:18px">⭐</span>
+      <span class="owl-star" style="top:18px;right:14px;font-size:.8rem">✨</span>
+    </div>
+    <div class="owl-body">
+      <div class="owl-wing-left"></div>
+      <div class="owl-wing-right"></div>
+      <div class="owl-feet">
+        <div class="owl-foot"></div>
+        <div class="owl-foot"></div>
+      </div>
+    </div>
+    <div class="owl-head">
+      <div class="owl-tuft left"></div>
+      <div class="owl-tuft right"></div>
+      <div class="owl-eyes">
+        <div class="owl-eye" id="eye-left"></div>
+        <div class="owl-eye" id="eye-right"></div>
+      </div>
+      <div class="owl-beak"></div>
+    </div>
+  </div>
+
+  <h1 class="tagline" id="tagline">📖 Magical stories for curious minds!</h1>
+  <a href="#stories" class="start-btn" id="startBtn">START READING 🚀</a>
+</section>
+
+<!-- CONTINUE READING -->
+<section class="continue-section" id="continueSection">
+  <div class="continue-card" id="continueCard" onclick="continueReading()">
+    <div class="continue-info">
+      <div class="continue-title" id="continueTitle">Continue Reading!</div>
+      <div class="continue-sub" id="continueSub">Pick up where you left off</div>
+    </div>
+    <div class="continue-emoji">📖</div>
+    <button class="continue-btn">▶ GO!</button>
+  </div>
+</section>
+
+<!-- STORY CARD GRID -->
+<h2 class="section-title" id="storiesTitle">🎉 Choose Your Adventure!</h2>
+<section class="cards-grid" id="stories">
+
+  <article class="story-card" data-genre="fairy">
+    <div class="card-image card-fairy"></div>
+    <div class="card-content-wrap">
+      <div class="card-emoji">🧚</div>
+      <div class="card-title" id="card-title-fairy"></div>
+      <div class="card-desc" id="card-desc-fairy"></div>
+      <a class="card-btn" href="story-viewer.html?genre=fairy" id="read-fairy"></a>
+    </div>
+  </article>
+
+  <article class="story-card" data-genre="myth">
+    <div class="card-image card-myth"></div>
+    <div class="card-content-wrap">
+      <div class="card-emoji">🏹</div>
+      <div class="card-title" id="card-title-myth"></div>
+      <div class="card-desc" id="card-desc-myth"></div>
+      <a class="card-btn" href="story-viewer.html?genre=myth" id="read-myth"></a>
+    </div>
+  </article>
+
+  <article class="story-card" data-genre="animals">
+    <div class="card-image card-animals"></div>
+    <div class="card-content-wrap">
+      <div class="card-emoji">🦁</div>
+      <div class="card-title" id="card-title-animals"></div>
+      <div class="card-desc" id="card-desc-animals"></div>
+      <a class="card-btn" href="story-viewer.html?genre=animals" id="read-animals"></a>
+    </div>
+  </article>
+
+  <article class="story-card" data-genre="space">
+    <div class="card-image card-space"></div>
+    <div class="card-content-wrap">
+      <div class="card-emoji">🚀</div>
+      <div class="card-title" id="card-title-space"></div>
+      <div class="card-desc" id="card-desc-space"></div>
+      <a class="card-btn" href="story-viewer.html?genre=space" id="read-space"></a>
+    </div>
+  </article>
+
+</section>
+
+<!-- PROGRESS BAR -->
+<section class="progress-section" aria-label="Reading progress">
+  <div class="progress-label" id="progressLabel">⭐ Your Stars: 0 / 40</div>
+  <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="40" aria-valuenow="0" id="progressBar">
+    <div class="progress-fill" id="progressFill" style="width:0%"></div>
+  </div>
+  <div class="progress-tip" id="progressTip">🌈 Read stories to earn stars! Keep going, superstar! 🌈</div>
+</section>
+
+<!-- BOTTOM NAVIGATION -->
+<nav class="bottom-nav">
+  <div class="nav-item active" id="navHome">
+    <span class="nav-icon">🏠</span>
+    <span>Home</span>
+  </div>
+  <div class="nav-item" id="navStories" onclick="document.getElementById('stories').scrollIntoView({behavior:'smooth'})">
+    <span class="nav-icon">📚</span>
+    <span>Stories</span>
+  </div>
+  <div class="nav-item" id="navStars" onclick="showStars()">
+    <span class="nav-icon">⭐</span>
+    <span>Stars</span>
+  </div>
+  <div class="nav-item" id="navBadges" onclick="goToBadges()">
+    <span class="nav-icon">🏆</span>
+    <span>Badges</span>
+  </div>
+  <div class="nav-item" id="navVoice" onclick="goToVoice()">
+    <span class="nav-icon">🎙️</span>
+    <span>Voice</span>
+  </div>
+</nav>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-text" id="footerText">Made with ❤️ for little readers</div>
+  <div class="footer-bottom">© 2026 Kids Digital Comic · All ages welcome 🌍</div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+<script>
+/* ============================================================
+   LANGUAGE STRINGS
+   ============================================================ */
+const STRINGS = {
+  en: {
+    tagline:      "📖 Magical stories for curious minds!",
+    startBtn:     "START READING 🚀",
+    storiesTitle: "🎉 Choose Your Adventure!",
+    continueTitle: "Continue Reading!",
+    continueSub:   "Pick up where you left off",
+    cards: {
+      fairy:   { title: "🧚 Fairy Tales & Fantasy",           desc: "Step into enchanted kingdoms, meet dragons, wizards and brave heroes on magical quests! ✨" },
+      myth:    { title: "🏹 Indian Mythology & Folklore",      desc: "Discover the tales of gods, goddesses and epic heroes from India's rich ancient traditions! 🌺" },
+      animals: { title: "🦁 Animals & Nature Adventures",   desc: "Join clever animals in wild forests, deep oceans and sunny savannahs — nature is amazing! 🌿" },
+      space:   { title: "🚀 Space & Science Fiction",         desc: "Blast off to distant galaxies, meet friendly aliens and solve mysteries among the stars! 🌌" },
+    },
+    readNow:     "READ NOW 📖",
+    progressLabel: (s) => `⭐ Your Stars: ${s} / 40`,
+    progressTip: "🌈 Read stories to earn stars! Keep going, superstar! 🌈",
+    footer:      "Made with ❤️ for little readers",
+  },
+  hi: {
+    tagline:      "📖 जिज्ञासु मनों के लिए जादुई कहानियाँ!",
+    startBtn:     "पढ़ना शुरू करें 🚀",
+    storiesTitle: "🎉 अपना रोमांच चुनें!",
+    continueTitle: "पढ़ना जारी रखें!",
+    continueSub:   "जहाँ से छोड़ा था वहाँ से शुरू करें",
+    cards: {
+      fairy:   { title: "🧚 परियों की कहानियाँ और फ़ंतासी",  desc: "जादुई राज्यों में प्रवेश करें, अजगर, जादूगर और बहादुर नायकों से मिलें! ✨" },
+      myth:    { title: "🏹 भारतीय पौराणिक कथाएँ और लोककथाएँ", desc: "भारत की समृद्ध प्राचीन परंपराओं से देवी-देवताओं और महाकाव्य नायकों की कहानियाँ! 🌺" },
+      animals: { title: "🦁 जानवर और प्रकृति के रोमांच",    desc: "जंगल, गहरे समुद्र और सवाना में चालाक जानवरों के साथ जुड़ें — प्रकृति अद्भुत है! 🌿" },
+      space:   { title: "🚀 अंतरिक्ष और विज्ञान कथा",      desc: "दूर की आकाशगंगाओं में उड़ें, दोस्ताना एलियंस से मिलें और तारों में रहस्य सुलझाएँ! 🌌" },
+    },
+    readNow:     "अभी पढ़ें 📖",
+    progressLabel: (s) => `⭐ आपके सितारे: ${s} / 40`,
+    progressTip: "🌈 सितारे कमाने के लिए कहानियाँ पढ़ें! जारी रखो, सुपरस्टार! 🌈",
+    footer:      "छोटे पाठकों के लिए ❤️ से बनाया गया",
+  },
+  as: {
+    tagline:      "📖 কৌতূহলী মনৰ বাবে যাদুকৰী কাহিনী!",
+    startBtn:     "পঢ়া আৰম্ভ কৰক 🚀",
+    storiesTitle: "🎉 আপোনাৰ অভিযান বাছনি কৰক!",
+    continueTitle: "পঢ়া এখনি জাৰি ৰাখক!",
+    continueSub:   "যি ঠাইত এৰিছিল সেইঠাইত পৰা আৰম্ভ কৰক",
+    cards: {
+      fairy:   { title: "🧚 পৰীৰ কাহিনী আৰু ফেন্টাছি",       desc: "মায়াবী ৰাজ্যত প্ৰৱেশ কৰক, ড্ৰেগন, যাদুকৰ আৰু সাহসী নায়কৰ সৈতে লগ হওক! ✨" },
+      myth:    { title: "🏹 ভাৰতীয় পুৰাণ আৰু লোককাহিনী",    desc: "ভাৰতৰ সমৃদ্ধ প্ৰাচীন পৰম্পৰাৰ দেৱ-দেৱী আৰু মহাকাব্যিক নায়কৰ কাহিনী আৱিষ্কাৰ কৰক! 🌺" },
+      animals: { title: "🦁 জন্তু আৰু প্ৰকৃতিৰ অভিযান",     desc: "বনজংঘল, গভীৰ সাগৰ আৰু সবানাত চতুৰ জন্তুৰ সৈতে যোগ দিয়ক — প্ৰকৃতি আশ্চৰ্যজনক! 🌿" },
+      space:   { title: "🚀 মহাকাশ আৰু বিজ্ঞান কথাসাহিত্য",  desc: "দূৰৱৰ্তী গেলেক্সিলৈ উৰি যাওক, বন্ধুত্বপূৰ্ণ এলিয়েনৰ সৈতে লগ হওক! 🌌" },
+    },
+    readNow:     "এতিয়াই পঢ়ক 📖",
+    progressLabel: (s) => `⭐ আপোনাৰ তৰা: ${s} / 40`,
+    progressTip: "🌈 তৰা অৰ্জন কৰিবলৈ কাহিনী পঢ়ক! চলি থাকক, চুপাৰষ্টাৰ! 🌈",
+    footer:      "সৰু পাঠকসকলৰ বাবে ❤️ দি তৈয়াৰ কৰা হৈছে",
+  },
+};
+
+/* ============================================================
+   LANGUAGE SWITCHER
+   ============================================================ */
+let currentLang = localStorage.getItem('kidsDC_lang') || 'en';
+
+function setLang(lang) {
+  currentLang = lang;
+  localStorage.setItem('kidsDC_lang', lang);
+  applyLang();
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.lang === lang);
+  });
+}
+
+function applyLang() {
+  const s = STRINGS[currentLang];
+  document.getElementById('tagline').textContent       = s.tagline;
+  document.getElementById('startBtn').textContent      = s.startBtn;
+  document.getElementById('storiesTitle').textContent  = s.storiesTitle;
+  document.getElementById('continueTitle').textContent = s.continueTitle;
+  document.getElementById('continueSub').textContent   = s.continueSub;
+  const genres = ['fairy','myth','animals','space'];
+  genres.forEach(g => {
+    document.getElementById(`card-title-${g}`).textContent = s.cards[g].title;
+    document.getElementById(`card-desc-${g}`).textContent  = s.cards[g].desc;
+    document.getElementById(`read-${g}`).textContent       = s.readNow;
+  });
+  const stars = parseInt(localStorage.getItem('kidsDC_stars') || '0');
+  document.getElementById('progressLabel').textContent = s.progressLabel(stars);
+  document.getElementById('progressTip').textContent   = s.progressTip;
+  document.getElementById('footerText').textContent    = s.footer;
+}
+
+/* ============================================================
+   PROGRESS BAR
+   ============================================================ */
+function initProgress() {
+  const stars = parseInt(localStorage.getItem('kidsDC_stars') || '0');
+  const pct = Math.min((stars / 40) * 100, 100);
+  const fill = document.getElementById('progressFill');
+  const bar  = document.getElementById('progressBar');
+  bar.setAttribute('aria-valuenow', stars);
+  setTimeout(() => { fill.style.width = pct + '%'; }, 300);
+}
+
+/* ============================================================
+   CONTINUE READING
+   ============================================================ */
+function checkContinueReading() {
+  try {
+    const stars = parseInt(localStorage.getItem('kidsDC_stars') || '0');
+    if (stars > 0) {
+      document.getElementById('continueSection').classList.add('show');
+    }
+  } catch(e) {}
+}
+
+function continueReading() {
+  // Show alert with stars count
+  try {
+    const stars = localStorage.getItem('kidsDC_stars') || '0';
+    alert(`⭐ You have ${stars} stars!\nKeep reading stories to earn more!`);
+  } catch(e) {
+    alert('Start reading a story! 📖');
+  }
+}
+
+/* ============================================================
+   BOTTOM NAV ACTIONS
+   ============================================================ */
+function showStars() {
+  try {
+    const stars = localStorage.getItem('kidsDC_stars') || '0';
+    alert(`⭐ You have ${stars} stars!\nKeep reading to earn more!`);
+  } catch(e) {
+    alert('⭐ You have 0 stars!\nStart reading to earn some!');
+  }
+}
+
+function goToBadges() {
+  window.location.href = 'quiz-rewards.html';
+}
+
+function goToVoice() {
+  window.location.href = 'audio-narrator.html';
+}
+
+/* ============================================================
+   FOOTER ROTATION
+   ============================================================ */
+const footerMessages = {
+  en: "Made with ❤️ for little readers",
+  hi: "छोटे पाठकों के लिए ❤️ से बनाया गया",
+  as: "সৰু পাঠকসকলৰ বাবে ❤️ দি তৈয়াৰ কৰা হৈছে",
+};
+let footerIdx = 0;
+const footerKeys = ['en','hi','as'];
+function rotateFooter() {
+  const el = document.getElementById('footerText');
+  el.style.opacity = '0';
+  setTimeout(() => {
+    footerIdx = (footerIdx + 1) % footerKeys.length;
+    el.textContent = footerMessages[footerKeys[footerIdx]];
+    el.style.opacity = '1';
+  }, 500);
+}
+setInterval(rotateFooter, 4000);
+
+/* ============================================================
+   OWL BLINK
+   ============================================================ */
+function blinkOwl() {
+  const eyes = [document.getElementById('eye-left'), document.getElementById('eye-right')];
+  eyes.forEach(e => e.classList.add('blink'));
+  setTimeout(() => eyes.forEach(e => e.classList.remove('blink')), 150);
+}
+setInterval(blinkOwl, 4000);
+
+/* ============================================================
+   GSAP ANIMATIONS
+   ============================================================ */
+window.addEventListener('DOMContentLoaded', () => {
+  setLang(currentLang);
+  initProgress();
+  checkContinueReading();
+
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./service-worker.js').catch(() => {});
+  }
+
+  gsap.fromTo('.story-card',
+    { y: 80, opacity: 0 },
+    {
+      y: 0, opacity: 1,
+      duration: 0.7,
+      stagger: 0.15,
+      ease: 'back.out(1.7)',
+      delay: 0.3,
+    }
+  );
+
+  gsap.fromTo('#tagline',
+    { y: 30, opacity: 0 },
+    { y: 0, opacity: 1, duration: 0.8, delay: 0.6, ease: 'power3.out' }
+  );
+  gsap.fromTo('#startBtn',
+    { scale: 0.7, opacity: 0 },
+    { scale: 1, opacity: 1, duration: 0.7, delay: 0.9, ease: 'back.out(2)' }
+  );
+
+  gsap.fromTo('.progress-section',
+    { y: 40, opacity: 0 },
+    { y: 0, opacity: 1, duration: 0.8, delay: 0.8, ease: 'power3.out' }
+  );
+});
+</script>
+</body>
+</html>

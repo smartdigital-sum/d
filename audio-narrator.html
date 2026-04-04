@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Magic Voice 🎙️ — Kids Digital Comic</title>
+<meta name="description" content="Read stories aloud with magical voice narration." />
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --yellow:  #FFEA00;
+    --orange:  #FF5E00;
+    --pink:    #FF1493;
+    --purple:  #9D00FF;
+    --teal:    #00E5FF;
+    --green:   #00FF7F;
+    --bg:      #FFF8EE;
+    --dark:    #2B0054;
+    --card-bg: #FFFFFF;
+    --radius:  20px;
+    --font:    'Baloo 2', cursive;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font);
+    background-color: var(--green);
+    background-image:
+      linear-gradient(45deg, rgba(255,255,255,0.4) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.4) 75%, rgba(255,255,255,0.4)),
+      linear-gradient(45deg, rgba(255,255,255,0.4) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.4) 75%, rgba(255,255,255,0.4));
+    background-size: 40px 40px;
+    background-position: 0 0, 20px 20px;
+    min-height: 100vh;
+    padding: 20px;
+    padding-bottom: 100px;
+    color: var(--dark);
+  }
+
+  .page-wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 600px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  /* Title */
+  .page-title {
+    text-align: center;
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: #FFF;
+    -webkit-text-stroke: 2px var(--dark);
+    letter-spacing: -0.5px;
+    line-height: 1.1;
+    text-shadow: 4px 5px 0 var(--dark);
+  }
+  .page-title span { color: var(--yellow); }
+
+  /* Card */
+  .card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: 6px 8px 0 var(--dark);
+    padding: 18px 20px;
+    border: 4px solid var(--dark);
+  }
+
+  /* Language buttons */
+  .lang-btns {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .lang-btn {
+    flex: 1;
+    min-width: 120px;
+    padding: 16px 20px;
+    border-radius: 16px;
+    border: 4px solid var(--dark);
+    background: #f7f4ff;
+    font-family: var(--font);
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--dark);
+    cursor: pointer;
+    box-shadow: 5px 6px 0 var(--dark);
+    transition: all .2s;
+    text-align: center;
+  }
+  .lang-btn:hover {
+    background: #fff3ee;
+    transform: translate(-3px, -3px);
+    box-shadow: 8px 9px 0 var(--dark);
+  }
+  .lang-btn.active {
+    background: var(--orange);
+    color: #fff;
+    transform: translate(-3px, -3px);
+    box-shadow: 8px 9px 0 var(--dark);
+  }
+
+  /* Owl + Controls */
+  #owlCard {
+    border-color: rgba(46,202,212,.35);
+    background: linear-gradient(160deg, #e8feff 0%, #fff8f0 100%);
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .owl-wrap {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  .owl-wrap.bouncing .owl-body { animation: owlBounce .5s ease-in-out infinite alternate; }
+  @keyframes owlBounce {
+    from { transform: translateY(0); }
+    to   { transform: translateY(-8px); }
+  }
+
+  .owl-body {
+    width: 100px;
+    height: 110px;
+    background: radial-gradient(ellipse at 40% 35%, #f9e4a0 0%, #e8c96e 60%, #c9a844 100%);
+    border-radius: 50% 50% 45% 45%;
+    position: relative;
+    box-shadow: 0 8px 24px rgba(200,169,68,.4);
+    border: 3px solid #c9a844;
+  }
+  .owl-body::before, .owl-body::after {
+    content: '';
+    position: absolute;
+    top: -14px;
+    width: 18px; height: 22px;
+    background: #e8c96e;
+    border: 2px solid #c9a844;
+    border-radius: 50% 50% 0 0;
+  }
+  .owl-body::before { left: 14px; transform: rotate(-15deg); }
+  .owl-body::after  { right: 14px; transform: rotate(15deg); }
+
+  .owl-face {
+    position: absolute;
+    width: 74px; height: 70px;
+    background: radial-gradient(ellipse at 50% 45%, #fff5d0 0%, #f5d890 100%);
+    border-radius: 50%;
+    top: 14px; left: 50%; transform: translateX(-50%);
+    border: 2px solid #ddb84a;
+  }
+  .owl-eye {
+    position: absolute;
+    width: 22px; height: 22px;
+    background: #fff;
+    border-radius: 50%;
+    top: 10px;
+    border: 2.5px solid var(--dark);
+  }
+  .owl-eye.left  { left: 8px; }
+  .owl-eye.right { right: 8px; }
+  .owl-eye::after {
+    content: '';
+    position: absolute;
+    width: 12px; height: 12px;
+    background: var(--dark);
+    border-radius: 50%;
+    top: 4px; left: 3px;
+  }
+
+  .beak-wrap {
+    position: absolute;
+    bottom: 14px; left: 50%;
+    transform: translateX(-50%);
+  }
+  .beak-top, .beak-bot {
+    width: 0; height: 0;
+    border-left: 9px solid transparent;
+    border-right: 9px solid transparent;
+  }
+  .beak-top { border-bottom: 12px solid var(--orange); }
+  .beak-bot { border-top: 8px solid #c9650a; margin-top: -2px; }
+
+  .owl-feet {
+    display: flex; gap: 12px; margin-top: 4px;
+  }
+  .owl-foot {
+    width: 28px; height: 14px;
+    background: var(--orange);
+    border-radius: 0 0 50% 50%;
+    border: 2px solid #c9650a;
+    position: relative;
+  }
+
+  .owl-label {
+    font-size: .75rem;
+    font-weight: 700;
+    color: var(--teal);
+  }
+
+  /* Waveform */
+  .waveform {
+    display: flex;
+    align-items: flex-end;
+    gap: 5px;
+    height: 60px;
+  }
+  .wave-bar {
+    width: 12px;
+    border-radius: 6px 6px 4px 4px;
+    background: linear-gradient(to top, var(--teal), var(--purple));
+    height: 8px;
+    transition: height .15s;
+  }
+  .waveform.playing .wave-bar:nth-child(1) { animation: wave 1.1s ease-in-out infinite; }
+  .waveform.playing .wave-bar:nth-child(2) { animation: wave 0.9s ease-in-out infinite .15s; }
+  .waveform.playing .wave-bar:nth-child(3) { animation: wave 1.3s ease-in-out infinite .05s; }
+  .waveform.playing .wave-bar:nth-child(4) { animation: wave 0.8s ease-in-out infinite .25s; }
+  .waveform.playing .wave-bar:nth-child(5) { animation: wave 1.0s ease-in-out infinite .1s; }
+  @keyframes wave {
+    0%,100% { height: 8px; }
+    50%      { height: 52px; }
+  }
+
+  /* Transport buttons */
+  .transport {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .t-btn {
+    padding: 14px 22px;
+    border-radius: 16px;
+    border: 4px solid var(--dark);
+    font-family: var(--font);
+    font-size: 1.05rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all .18s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 4px 6px 0 var(--dark);
+  }
+  .t-btn:hover  { transform: translate(-3px, -3px); box-shadow: 8px 10px 0 var(--dark); }
+  .t-btn:active { transform: translate(3px, 3px); box-shadow: 1px 3px 0 var(--dark); }
+  .t-btn.play   { background: var(--green);  color: #fff; }
+  .t-btn.pause { background: var(--yellow); color: var(--dark); }
+  .t-btn.stop  { background: var(--orange); color: #fff; }
+  .t-btn.replay { background: var(--teal);   color: #fff; }
+
+  /* Speed */
+  .speed-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .speed-btn {
+    padding: 7px 14px;
+    border-radius: 10px;
+    border: 3px solid var(--dark);
+    background: #f5f0ff;
+    font-family: var(--font);
+    font-size: .95rem;
+    font-weight: 700;
+    color: var(--dark);
+    cursor: pointer;
+    box-shadow: 3px 4px 0 var(--dark);
+    transition: all .15s;
+  }
+  .speed-btn:hover { transform: translate(-2px, -2px); box-shadow: 5px 6px 0 var(--dark); }
+  .speed-btn.active { background: var(--purple); color: #fff; transform: translate(-2px, -2px); box-shadow: 5px 6px 0 var(--dark); }
+
+  /* Text area */
+  #textCard { border-color: rgba(255,77,141,.3); }
+  #panelText {
+    width: 100%;
+    min-height: 100px;
+    padding: 12px 16px;
+    border-radius: 14px;
+    border: 4px solid var(--dark);
+    font-family: var(--font);
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: var(--dark);
+    background: #fff7fb;
+    resize: vertical;
+    outline: none;
+    line-height: 1.5;
+  }
+
+  /* Voice selector */
+  .voice-selector {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: 6px 8px 0 var(--dark);
+    padding: 16px 20px;
+    border: 4px solid var(--dark);
+  }
+  .voice-label {
+    font-size: .85rem;
+    font-weight: 700;
+    color: var(--purple);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .voice-select {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 12px;
+    border: 3px solid var(--dark);
+    font-family: var(--font);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--dark);
+    background: #faf7ff;
+    cursor: pointer;
+    box-shadow: 3px 4px 0 var(--dark);
+  }
+  .voice-select:focus {
+    outline: none;
+    box-shadow: 5px 6px 0 var(--dark);
+  }
+
+  /* Notice */
+  .notice {
+    background: linear-gradient(135deg, #fff7e0, #ffecc8);
+    border: 2px solid var(--yellow);
+    border-radius: 12px;
+    padding: 10px 16px;
+    font-size: .9rem;
+    font-weight: 600;
+    color: #7a5500;
+    text-align: center;
+  }
+
+  /* Back link */
+  .back-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px;
+    background: var(--card-bg);
+    border: 4px solid var(--dark);
+    border-radius: var(--radius);
+    box-shadow: 4px 6px 0 var(--dark);
+    text-decoration: none;
+    font-family: var(--font);
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--dark);
+    transition: all .15s;
+  }
+  .back-link:hover { transform: translate(-2px, -2px); box-shadow: 6px 8px 0 var(--dark); }
+
+  /* Status */
+  #statusBar {
+    text-align: center;
+    font-size: .9rem;
+    font-weight: 600;
+    color: var(--purple);
+  }
+
+  @media (max-width: 420px) {
+    .t-btn { padding: 12px 14px; font-size: .95rem; }
+    .lang-btn { font-size: .9rem; padding: 10px 6px; }
+    .owl-body { width: 80px; height: 90px; }
+  }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <div class="page-title">🎙️ Magic Voice 🦉</div>
+
+  <!-- Language -->
+  <div class="card" id="langCard">
+    <div class="lang-btns">
+      <button class="lang-btn active" data-lang="en">🇬🇧 English</button>
+      <button class="lang-btn" data-lang="hi">🇮🇳 हिन्दी</button>
+      <button class="lang-btn" data-lang="as">🇮🇳 অসমীয়া</button>
+    </div>
+  </div>
+
+  <!-- Owl + Waveform -->
+  <div class="card" id="owlCard">
+    <div class="owl-wrap" id="owlWrap">
+      <div class="owl-body">
+        <div class="owl-face">
+          <div class="owl-eye left"></div>
+          <div class="owl-eye right"></div>
+          <div class="beak-wrap">
+            <div class="beak-top"></div>
+            <div class="beak-bot"></div>
+          </div>
+        </div>
+      </div>
+      <div class="owl-label">Ollie the Owl</div>
+    </div>
+
+    <div class="waveform" id="waveform">
+      <div class="wave-bar"></div>
+      <div class="wave-bar"></div>
+      <div class="wave-bar"></div>
+      <div class="wave-bar"></div>
+      <div class="wave-bar"></div>
+    </div>
+  </div>
+
+  <!-- Text input -->
+  <div class="card" id="textCard">
+    <textarea id="panelText" placeholder="Type or paste text here to hear it read aloud..."></textarea>
+  </div>
+
+  <!-- Controls -->
+  <div class="card" id="ctrlCard">
+    <div class="transport">
+      <button class="t-btn play" id="btnPlay">▶ Play</button>
+      <button class="t-btn pause" id="btnPause">⏸ Pause</button>
+      <button class="t-btn stop" id="btnStop">⏹ Stop</button>
+      <button class="t-btn replay" id="btnReplay">🔁 Replay</button>
+    </div>
+
+    <div class="speed-row">
+      <button class="speed-btn" data-speed="0.75">0.75×</button>
+      <button class="speed-btn active" data-speed="1">1×</button>
+      <button class="speed-btn" data-speed="1.25">1.25×</button>
+    </div>
+  </div>
+
+  <!-- Voice Selector -->
+  <div class="voice-selector">
+    <div class="voice-label">🎭 Choose Voice Style</div>
+    <select class="voice-select" id="voiceSelect">
+      <option value="">🔄 Loading voices...</option>
+    </select>
+  </div>
+
+  <!-- Notice -->
+  <div class="notice">
+    💡 Tip: Stories already have audio built-in! Use this to test any text.
+  </div>
+
+  <!-- Back -->
+  <a href="index.html" class="back-link">🏠 Back to Story Library</a>
+
+  <!-- Status -->
+  <div id="statusBar">Ready — type something and press ▶ Play!</div>
+
+</div>
+
+<!-- ── CONFIG (ElevenLabs API Key) ── -->
+<script src="config.js"></script>
+
+<script>
+/* Language codes for TTS */
+const TTS_LANG = { en: "en-US", hi: "hi-IN", as: "as-IN" };
+
+/* State */
+let currentLang = "en";
+let currentSpeed = 1;
+let isPlaying = false;
+let utterance = null;
+let currentAudio = null;  // For ElevenLabs audio element
+
+/* DOM refs */
+const langBtns = document.querySelectorAll(".lang-btn");
+const speedBtns = document.querySelectorAll(".speed-btn");
+const panelText = document.getElementById("panelText");
+const owlWrap = document.getElementById("owlWrap");
+const waveform = document.getElementById("waveform");
+const statusBar = document.getElementById("statusBar");
+const voiceSelect = document.getElementById("voiceSelect");
+let selectedVoice = null;
+
+/* Enhanced voice preferences - prioritizes natural, friendly voices */
+const VOICE_PREFERENCES = {
+  en: [
+    // Premium natural voices (highest priority)
+    { name: /samantha/i, weight: 15 },           // macOS - excellent natural quality
+    { name: /karen/i, weight: 14 },              // macOS - very clear, friendly
+    { name: /daniel/i, weight: 13 },             // macOS - great male voice
+    { name: /tessa/i, weight: 13 },              // macOS - excellent for kids
+    { name: /moira/i, weight: 12 },              // macOS - Irish, very natural
+    { name: /veena/i, weight: 11 },              // Windows - clear Indian English
+    { name: /zira/i, weight: 11 },               // Windows - good quality
+    { name: /david/i, weight: 10 },              // Windows - male voice
+    { name: /hazel/i, weight: 10 },              // Windows - British, clear
+    { name: /susan/i, weight: 10 },              // Windows - good general purpose
+    { name: /catherine/i, weight: 10 },          // macOS - Australian, friendly
+    { name: /fred/i, weight: 9 },                // macOS - male, distinctive
+    // Google voices (usually high quality)
+    { name: /google.*en-us.*(neural|wavenet)/i, weight: 14 },
+    { name: /google.*en-gb.*(neural|wavenet)/i, weight: 13 },
+    { name: /google.*premium/i, weight: 12 },
+    { name: /google/i, weight: 9 },
+    // Microsoft voices
+    { name: /microsoft.*(jenny|aria|guy)/i, weight: 11 },  // Azure neural
+    { name: /microsoft.*(sonya|michelle)/i, weight: 10 },  // Good female voices
+    { name: /microsoft.*(mark|james)/i, weight: 9 },       // Good male voices
+    { name: /microsoft.*natural/i, weight: 10 },
+    { name: /microsoft/i, weight: 5 },
+    // General quality indicators
+    { name: /neural/i, weight: 12 },
+    { name: /waveNet/i, weight: 11 },
+    { name: /premium/i, weight: 10 },
+    { name: /enhanced/i, weight: 9 },
+    { name: /natural/i, weight: 8 },
+    // Avoid robotic/lower quality voices
+    { name: /robot/i, weight: -20 },
+    { name: /synth/i, weight: -10 },
+    { name: /compact/i, weight: -8 },
+    { name: /low.*quality/i, weight: -15 },
+  ],
+  hi: [
+    { name: /google.*hindi.*(neural|wavenet)/i, weight: 14 },
+    { name: /google.*hindi/i, weight: 10 },
+    { name: /microsoft.*hindi.*(neural|natural)/i, weight: 12 },
+    { name: /microsoft.*hindi/i, weight: 7 },
+    { name: /swara/i, weight: 10 },              // Hindi female voice
+    { name: /hi/i, weight: 5 },
+  ],
+  as: [
+    { name: /google.*(neural|wavenet)/i, weight: 12 },
+    { name: /google/i, weight: 8 },
+    { name: /microsoft.*natural/i, weight: 9 },
+    { name: /microsoft/i, weight: 5 },
+  ]
+};
+
+function selectBestVoice(voices, lang) {
+  if (!voices || voices.length === 0) return null;
+  const prefs = VOICE_PREFERENCES[lang] || [];
+  const langCode = TTS_LANG[lang] || 'en-US';
+  
+  const scored = voices.map(voice => {
+    let score = 0;
+    
+    // Check exact language match
+    if (voice.lang === langCode) {
+      score += 60;
+    } else if (voice.lang.startsWith(lang)) {
+      score += 40;
+    }
+    
+    // Apply preferences
+    prefs.forEach(pref => {
+      if (pref.name.test(voice.name)) score += pref.weight;
+    });
+    
+    // Prefer local voices (faster, more reliable)
+    if (voice.localService) {
+      score += 15;
+    } else {
+      score -= 5;
+    }
+    
+    // Prefer non-default voices (usually better quality)
+    if (!voice.default) score += 3;
+    
+    // Slight preference for female voices (friendlier for kids)
+    const femaleNames = /\b(samantha|karen|tessa|moira|veena|zira|hazel|susan|catherine|jenny|aria|sonya|michelle|swara|linda|amy|emma|victoria)\b/i;
+    if (femaleNames.test(voice.name)) score += 5;
+    
+    return { voice, score };
+  });
+  
+  scored.sort((a, b) => b.score - a.score);
+  
+  // Log selected voice for debugging
+  if (scored.length > 0 && scored[0].score > 0) {
+    console.log(`Selected voice: ${scored[0].voice.name} (score: ${scored[0].score})`);
+  }
+  
+  return scored[0]?.voice || null;
+}
+
+/* Populate voice selector dropdown */
+function populateVoiceSelector() {
+  // Check if ElevenLabs is being used for current language
+  if (shouldUseElevenLabs(currentLang)) {
+    voiceSelect.innerHTML = '';
+    const opt = document.createElement('option');
+    opt.value = 'elevenlabs';
+    opt.textContent = '✨ Premium AI Voice (ElevenLabs)';
+    voiceSelect.appendChild(opt);
+    selectedVoice = null;
+    return;
+  }
+  
+  const voices = window.speechSynthesis.getVoices();
+  const langVoices = voices.filter(v => v.lang.startsWith(currentLang));
+  
+  voiceSelect.innerHTML = '';
+  
+  if (langVoices.length === 0) {
+    voiceSelect.innerHTML = '<option value="">No voices available</option>';
+    return;
+  }
+  
+  // Add "Best for Kids" option first
+  const bestVoice = selectBestVoice(langVoices, currentLang);
+  if (bestVoice) {
+    const opt = document.createElement('option');
+    opt.value = bestVoice.name;
+    opt.textContent = '✨ Best for Kids (Recommended)';
+    voiceSelect.appendChild(opt);
+  }
+  
+  // Add all available voices
+  langVoices.forEach(voice => {
+    const opt = document.createElement('option');
+    opt.value = voice.name;
+    const cleanName = voice.name.replace(/Microsoft|Google|Natural|Speech/, '').trim();
+    opt.textContent = `🎤 ${cleanName} (${voice.lang})`;
+    voiceSelect.appendChild(opt);
+  });
+  
+  // Select best voice by default
+  if (bestVoice) {
+    voiceSelect.value = bestVoice.name;
+    selectedVoice = bestVoice;
+  }
+}
+
+/* Voice selection event */
+voiceSelect.addEventListener('change', () => {
+  const voices = window.speechSynthesis.getVoices();
+  const selected = voices.find(v => v.name === voiceSelect.value);
+  selectedVoice = selected || null;
+});
+
+/* Language selection */
+langBtns.forEach(btn => {
+  btn.addEventListener("click", () => {
+    currentLang = btn.dataset.lang;
+    langBtns.forEach(b => b.classList.toggle("active", b === btn));
+    populateVoiceSelector();  // Refresh voice list for new language
+    try { localStorage.setItem('kidsDC_lang', currentLang); } catch(e) {}
+  });
+});
+
+/* ═══════════════════════════════════════
+   ELEVENLABS TTS INTEGRATION
+   ═══════════════════════════════════════ */
+
+// Check if ElevenLabs is configured for a language
+function shouldUseElevenLabs(lang) {
+  if (typeof CONFIG === 'undefined') return false;
+  if (!CONFIG.USE_ELEVENLABS) return false;
+  if (!CONFIG.ELEVENLABS_API_KEY) return false;
+  
+  // Always use ElevenLabs for Assamese (no native browser support)
+  if (lang === 'as') return true;
+  
+  // Use ElevenLabs if a voice ID is configured for this language
+  const voiceId = CONFIG.VOICE_IDS[lang];
+  return voiceId && voiceId.length > 0;
+}
+
+// Play audio using ElevenLabs API
+async function playElevenLabs(text) {
+  if (!text) return;
+  
+  const voiceId = CONFIG.VOICE_IDS[currentLang] || CONFIG.VOICE_IDS.en;
+  const apiKey = CONFIG.ELEVENLABS_API_KEY;
+  
+  setStatus("Loading premium voice... ⏳");
+  
+  try {
+    const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
+      method: 'POST',
+      headers: {
+        'xi-api-key': apiKey,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        text: text,
+        model_id: 'eleven_multilingual_v2',
+        voice_settings: {
+          stability: 0.5,
+          similarity_boost: 0.75,
+          style: 0.3,
+          use_speaker_boost: true
+        }
+      }),
+    });
+    
+    if (!response.ok) {
+      throw new Error(`ElevenLabs error: ${response.status}`);
+    }
+    
+    const audioBlob = await response.blob();
+    const audioUrl = URL.createObjectURL(audioBlob);
+    const audio = new Audio(audioUrl);
+    
+    currentAudio = audio;
+    
+    audio.onplay = () => {
+      isPlaying = true;
+      owlWrap.classList.add("bouncing");
+      waveform.classList.add("playing");
+      setStatus("Reading... 🔊");
+    };
+    
+    audio.onended = () => {
+      isPlaying = false;
+      owlWrap.classList.remove("bouncing");
+      waveform.classList.remove("playing");
+      URL.revokeObjectURL(audioUrl);
+      currentAudio = null;
+      setStatus("Done! Great job! 🎉");
+    };
+    
+    audio.onerror = () => {
+      isPlaying = false;
+      owlWrap.classList.remove("bouncing");
+      waveform.classList.remove("playing");
+      URL.revokeObjectURL(audioUrl);
+      currentAudio = null;
+      setStatus("Audio error — trying browser voice...");
+      // Fallback to browser TTS
+      playBrowserTTS(text);
+    };
+    
+    await audio.play();
+    
+  } catch (error) {
+    console.error('ElevenLabs TTS error:', error);
+    isPlaying = false;
+    owlWrap.classList.remove("bouncing");
+    waveform.classList.remove("playing");
+    setStatus(`❌ ${error.message} — using browser voice`);
+    // Fallback to browser TTS
+    playBrowserTTS(text);
+  }
+}
+
+// Browser TTS fallback
+function playBrowserTTS(text) {
+  if (!window.speechSynthesis) {
+    setStatus("Your browser doesn't support text-to-speech! 😢");
+    return;
+  }
+
+  utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = TTS_LANG[currentLang] || "en-US";
+  
+  // Better rate for kids - slightly slower for clarity
+  utterance.rate = Math.min(currentSpeed * 0.95, 1.0);
+  
+  // Select best voice
+  const voices = window.speechSynthesis.getVoices();
+  const bestVoice = selectBestVoice(voices, currentLang);
+  if (bestVoice) {
+    utterance.voice = bestVoice;
+  }
+  
+  // Natural pitch - slightly higher for friendliness
+  utterance.pitch = currentLang === 'en' ? 1.1 : 1.0;
+  utterance.volume = 1.0;
+
+  utterance.onstart = () => {
+    isPlaying = true;
+    owlWrap.classList.add("bouncing");
+    waveform.classList.add("playing");
+    setStatus("Reading... 🔊");
+  };
+
+  utterance.onend = () => {
+    isPlaying = false;
+    owlWrap.classList.remove("bouncing");
+    waveform.classList.remove("playing");
+    setStatus("Done! Great job! 🎉");
+  };
+
+  window.speechSynthesis.speak(utterance);
+}
+
+/* Speed selection */
+speedBtns.forEach(btn => {
+  btn.addEventListener("click", () => {
+    currentSpeed = parseFloat(btn.dataset.speed);
+    speedBtns.forEach(b => b.classList.toggle("active", b === btn));
+    if (utterance) utterance.rate = currentSpeed;
+  });
+});
+
+/* Play - Enhanced for natural voice with ElevenLabs support */
+document.getElementById("btnPlay").addEventListener("click", () => {
+  const text = panelText.value.trim();
+  if (!text) { setStatus("Please type some text first! ✍️"); return; }
+
+  stopAll();
+  
+  // Use ElevenLabs for Assamese or if configured for current language
+  if (shouldUseElevenLabs(currentLang)) {
+    playElevenLabs(text);
+  } else {
+    playBrowserTTS(text);
+  }
+});
+
+/* Pause */
+document.getElementById("btnPause").addEventListener("click", () => {
+  // Handle ElevenLabs audio
+  if (currentAudio) {
+    if (isPlaying) {
+      currentAudio.pause();
+      isPlaying = false;
+      owlWrap.classList.remove("bouncing");
+      waveform.classList.remove("playing");
+      setStatus("Paused ⏸");
+    } else {
+      currentAudio.play();
+      isPlaying = true;
+      owlWrap.classList.add("bouncing");
+      waveform.classList.add("playing");
+      setStatus("Reading... 🔊");
+    }
+    return;
+  }
+  
+  // Handle browser TTS
+  if (!window.speechSynthesis) return;
+  if (isPlaying) {
+    window.speechSynthesis.pause();
+    isPlaying = false;
+    owlWrap.classList.remove("bouncing");
+    waveform.classList.remove("playing");
+    setStatus("Paused ⏸");
+  } else {
+    window.speechSynthesis.resume();
+    isPlaying = true;
+    owlWrap.classList.add("bouncing");
+    waveform.classList.add("playing");
+    setStatus("Reading... 🔊");
+  }
+});
+
+/* Stop */
+document.getElementById("btnStop").addEventListener("click", stopAll);
+function stopAll() {
+  // Stop ElevenLabs audio if playing
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio.currentTime = 0;
+    currentAudio = null;
+  }
+  
+  // Stop browser TTS
+  if (window.speechSynthesis) window.speechSynthesis.cancel();
+  
+  isPlaying = false;
+  owlWrap.classList.remove("bouncing");
+  waveform.classList.remove("playing");
+  setStatus("Stopped ⏹");
+}
+
+/* Replay */
+document.getElementById("btnReplay").addEventListener("click", () => {
+  stopAll();
+  setTimeout(() => document.getElementById("btnPlay").click(), 100);
+});
+
+function setStatus(msg) { statusBar.textContent = msg; }
+
+/* Preload voices */
+if (window.speechSynthesis) {
+  window.speechSynthesis.getVoices();
+  window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+}
+
+/* Restore language preference */
+try {
+  const savedLang = localStorage.getItem('kidsDC_lang');
+  if (savedLang && TTS_LANG[savedLang]) {
+    currentLang = savedLang;
+    langBtns.forEach(b => b.classList.toggle("active", b.dataset.lang === savedLang));
+  }
+} catch(e) {}
+</script>
+</body>
+</html>

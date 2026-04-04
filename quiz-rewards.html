@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Quiz Time! 🧠✨ — Kids Digital Comic</title>
+<meta name="description" content="Test your knowledge with story quizzes and earn badges on Kids Digital Comic." />
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+<style>
+  :root {
+    --pink:    #FF6FB7;
+    --yellow:  #FFD93D;
+    --blue:    #4FC3F7;
+    --green:   #69D179;
+    --orange:  #FF9A3C;
+    --purple:  #C084FC;
+    --bg:      #FFF8EC;
+    --card:    #FFFFFF;
+    --dark:    #2D1B69;
+    --radius:  22px;
+    --shadow:  0 8px 32px rgba(45,27,105,.12);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Baloo 2', cursive;
+    background: var(--bg);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+    padding-bottom: 90px; /* Space for bottom nav */
+  }
+
+  /* Starfield background */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(circle at 15% 20%, #FFE0F0 0%, transparent 40%),
+      radial-gradient(circle at 85% 10%, #E0F4FF 0%, transparent 35%),
+      radial-gradient(circle at 50% 90%, #FFF0CC 0%, transparent 45%);
+    pointer-events: none; z-index: 0;
+  }
+
+  .floating-emojis {
+    position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    overflow: hidden;
+  }
+  .fe {
+    position: absolute;
+    font-size: 28px;
+    animation: floatUp 8s linear infinite;
+    opacity: 0.18;
+  }
+  @keyframes floatUp {
+    0%   { transform: translateY(110vh) rotate(0deg);   opacity: 0; }
+    10%  { opacity: 0.18; }
+    90%  { opacity: 0.18; }
+    100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+  }
+
+  /* ── HEADER ── */
+  #header {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 20px;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 3px solid var(--yellow);
+    box-shadow: 0 2px 16px rgba(0,0,0,.08);
+  }
+  #header .logo {
+    font-size: 1.1rem; font-weight: 800; color: var(--dark);
+    text-decoration: none;
+  }
+  #star-counter {
+    display: flex; align-items: center; gap: 6px;
+    background: linear-gradient(135deg, var(--yellow), var(--orange));
+    padding: 8px 18px; border-radius: 40px;
+    font-size: 1.25rem; font-weight: 800; color: var(--dark);
+    box-shadow: 0 4px 14px rgba(255,180,0,.4);
+    position: relative;
+  }
+  #star-counter .star-fly {
+    position: absolute;
+    font-size: 1.4rem;
+    animation: flyToCounter 0.9s ease-in forwards;
+    pointer-events: none;
+  }
+  @keyframes flyToCounter {
+    0%   { transform: scale(1.5) translateY(30px); opacity: 1; }
+    100% { transform: scale(0.3) translateY(0px);  opacity: 0; }
+  }
+
+  /* ── WRAPPER ── */
+  #app {
+    position: relative; z-index: 10;
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 90px 20px 60px;
+  }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 36px 32px;
+    box-shadow: var(--shadow);
+    border: 3px solid rgba(255,255,255,0.9);
+  }
+
+  /* ── INTRO SCREEN ── */
+  #intro-screen .big-title {
+    font-size: clamp(2.2rem, 7vw, 3.2rem);
+    font-weight: 800;
+    color: var(--dark);
+    text-align: center;
+    line-height: 1.15;
+  }
+  #intro-screen .genre-badge {
+    display: inline-block;
+    font-size: clamp(3rem, 12vw, 5rem);
+    margin: 16px 0;
+    animation: bounce 1.2s ease infinite alternate;
+  }
+  @keyframes bounce {
+    from { transform: translateY(0); }
+    to   { transform: translateY(-14px); }
+  }
+  #intro-screen .sub {
+    font-size: 1.2rem; font-weight: 600;
+    color: #666; text-align: center; margin: 12px 0 28px;
+  }
+  #intro-screen .story-title {
+    font-size: 1.05rem; font-weight: 700;
+    color: var(--purple);
+    background: #F5F0FF;
+    padding: 10px 20px; border-radius: 40px;
+    text-align: center; margin-bottom: 28px;
+  }
+
+  /* ── PROGRESS BAR ── */
+  .progress-wrap {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 24px;
+  }
+  .progress-track {
+    flex: 1; height: 14px;
+    background: #F0E8FF;
+    border-radius: 40px; overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--blue), var(--purple));
+    border-radius: 40px;
+    transition: width .6s cubic-bezier(.34,1.56,.64,1);
+  }
+  .progress-label {
+    font-size: 1rem; font-weight: 800; color: var(--dark);
+    white-space: nowrap;
+  }
+
+  /* ── QUESTION ── */
+  .question-text {
+    font-size: clamp(1.3rem, 4vw, 1.7rem);
+    font-weight: 800;
+    color: var(--dark);
+    text-align: center;
+    margin-bottom: 28px;
+    line-height: 1.35;
+  }
+
+  /* ── ANSWER BUTTONS ── */
+  .answers { display: flex; flex-direction: column; gap: 14px; }
+  .ans-btn {
+    min-height: 62px;
+    padding: 14px 22px;
+    border-radius: 18px;
+    border: 3px solid transparent;
+    font-family: 'Baloo 2', cursive;
+    font-size: 1.15rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: left;
+    display: flex; align-items: center; gap: 12px;
+    transition: transform .15s ease, box-shadow .15s ease;
+    position: relative; overflow: hidden;
+  }
+  .ans-btn::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(120deg, rgba(255,255,255,.3), transparent);
+    opacity: 0; transition: opacity .2s;
+  }
+  .ans-btn:hover::before { opacity: 1; }
+  .ans-btn:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 24px rgba(0,0,0,.15);
+  }
+  .ans-btn:active { transform: scale(0.97); }
+
+  .ans-btn:nth-child(1) { background: linear-gradient(135deg,#FFE5F4,#FFB3DC); border-color: var(--pink);    color: #7A0040; }
+  .ans-btn:nth-child(2) { background: linear-gradient(135deg,#FFF8CC,#FFDF00); border-color: var(--yellow); color: #5A3D00; }
+  .ans-btn:nth-child(3) { background: linear-gradient(135deg,#DDFAFF,#9AE6FF); border-color: var(--blue);   color: #003A5A; }
+
+  .ans-btn .btn-letter {
+    width: 34px; height: 34px;
+    background: rgba(255,255,255,.6);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; font-weight: 900;
+    flex-shrink: 0;
+  }
+
+  /* Correct / Wrong states */
+  .ans-btn.correct {
+    background: linear-gradient(135deg,#C8FFDA,#5EE887) !important;
+    border-color: #1DB954 !important;
+    color: #004D1A !important;
+    animation: correctPulse .4s ease;
+  }
+  @keyframes correctPulse {
+    0%   { transform: scale(1); }
+    50%  { transform: scale(1.06); }
+    100% { transform: scale(1); }
+  }
+  .ans-btn.wrong {
+    background: linear-gradient(135deg,#FFD5D5,#FF8A8A) !important;
+    border-color: #E53935 !important;
+    color: #5A0000 !important;
+    animation: shake .5s cubic-bezier(.36,.07,.19,.97);
+  }
+  @keyframes shake {
+    10%,90%  { transform: translateX(-4px); }
+    20%,80%  { transform: translateX(7px);  }
+    30%,50%,70% { transform: translateX(-7px); }
+    40%,60%  { transform: translateX(7px);  }
+  }
+
+  /* ── FEEDBACK TEXT ── */
+  #feedback {
+    text-align: center;
+    font-size: 1.4rem;
+    font-weight: 800;
+    min-height: 42px;
+    margin-top: 20px;
+    opacity: 0;
+    transition: opacity .2s;
+  }
+  #feedback.show { opacity: 1; }
+  #feedback.green { color: #1DB954; }
+  #feedback.red   { color: #E53935; }
+
+  /* ── COMPLETION SCREEN ── */
+  #complete-screen { text-align: center; }
+  #complete-screen .hero-title {
+    font-size: clamp(2.4rem, 8vw, 3.6rem);
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--orange), var(--pink), var(--purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+  #complete-screen .stars-total {
+    font-size: 1.6rem; font-weight: 800;
+    color: var(--dark);
+    margin: 16px 0;
+    background: linear-gradient(135deg,#FFFACD,#FFD700);
+    padding: 14px 28px; border-radius: 40px;
+    display: inline-block;
+    box-shadow: 0 4px 18px rgba(255,200,0,.35);
+  }
+  #complete-screen .new-badge-wrap {
+    margin: 24px 0;
+  }
+  #complete-screen .new-badge-label {
+    font-size: 1rem; font-weight: 700;
+    color: #888; text-transform: uppercase;
+    letter-spacing: 1.5px; margin-bottom: 10px;
+  }
+  .badge-unlocked-display {
+    display: inline-flex; flex-direction: column;
+    align-items: center; gap: 8px;
+    background: linear-gradient(135deg,#FFF9E6,#FFF0B3);
+    border: 3px solid var(--yellow);
+    border-radius: 24px;
+    padding: 20px 36px;
+    box-shadow: 0 0 0 4px rgba(255,215,0,.25), 0 8px 32px rgba(255,180,0,.25);
+    animation: goldenGlow 2s ease-in-out infinite alternate;
+  }
+  @keyframes goldenGlow {
+    from { box-shadow: 0 0 0 4px rgba(255,215,0,.25), 0 8px 32px rgba(255,180,0,.25); }
+    to   { box-shadow: 0 0 0 8px rgba(255,215,0,.45), 0 8px 48px rgba(255,180,0,.5); }
+  }
+  .badge-unlocked-display .badge-emoji { font-size: 3.5rem; }
+  .badge-unlocked-display .badge-name  { font-size: 1.1rem; font-weight: 800; color: var(--dark); }
+
+  /* ── BADGE WALL ── */
+  #badge-wall-section { margin-top: 40px; }
+  #badge-wall-section h2 {
+    font-size: 1.8rem; font-weight: 800; color: var(--dark);
+    text-align: center; margin-bottom: 20px;
+  }
+  .badge-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 16px;
+  }
+  .badge-item {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 8px;
+    padding: 18px 12px;
+    border-radius: 20px;
+    border: 3px solid transparent;
+    text-align: center;
+    transition: transform .2s ease;
+  }
+  .badge-item:hover { transform: scale(1.05); }
+  .badge-item.unlocked {
+    background: linear-gradient(135deg,#FFFCE6,#FFF5B0);
+    border-color: var(--yellow);
+    box-shadow: 0 0 0 3px rgba(255,215,0,.2), var(--shadow);
+    animation: badgeGlow 3s ease infinite alternate;
+  }
+  @keyframes badgeGlow {
+    from { box-shadow: 0 0 0 3px rgba(255,215,0,.2), 0 4px 16px rgba(0,0,0,.08); }
+    to   { box-shadow: 0 0 0 6px rgba(255,215,0,.4), 0 4px 24px rgba(255,180,0,.3); }
+  }
+  .badge-item.locked {
+    background: #F5F5F5;
+    border-color: #DDD;
+    filter: grayscale(1) opacity(0.65);
+  }
+  .badge-item .b-emoji  { font-size: 2.4rem; }
+  .badge-item .b-name   { font-size: .85rem; font-weight: 700; color: var(--dark); line-height: 1.2; }
+  .badge-item .b-stars  { font-size: .8rem; font-weight: 600; color: #999; }
+  .badge-item.locked .b-emoji { filter: grayscale(1); }
+
+  /* ── BUTTONS ── */
+  .btn-primary {
+    display: inline-flex; align-items: center; justify-content: center;
+    gap: 10px;
+    min-height: 58px; padding: 14px 32px;
+    border-radius: 50px; border: none;
+    font-family: 'Baloo 2', cursive;
+    font-size: 1.15rem; font-weight: 800;
+    cursor: pointer;
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(0,0,0,.18); }
+  .btn-primary:active { transform: scale(0.96); }
+  .btn-start {
+    background: linear-gradient(135deg, var(--purple), #7C3AED);
+    color: white;
+    box-shadow: 0 6px 20px rgba(124,58,237,.4);
+    width: 100%;
+    font-size: 1.3rem;
+  }
+  .btn-home {
+    background: linear-gradient(135deg, var(--blue), #0288D1);
+    color: white;
+    box-shadow: 0 6px 20px rgba(2,136,209,.4);
+  }
+  .btn-retry {
+    background: linear-gradient(135deg, var(--green), #2E7D32);
+    color: white;
+    box-shadow: 0 6px 20px rgba(46,125,50,.4);
+  }
+  .complete-actions {
+    display: flex; gap: 14px; justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 28px;
+  }
+
+  /* ── LANG SWITCHER ── */
+  #lang-sw {
+    display: flex; gap: 8px;
+  }
+  #lang-sw button {
+    padding: 5px 12px; border-radius: 20px;
+    border: 2px solid var(--purple);
+    background: transparent;
+    font-family: 'Baloo 2', cursive;
+    font-size: .85rem; font-weight: 700;
+    color: var(--purple); cursor: pointer;
+    transition: all .15s;
+  }
+  #lang-sw button.active,
+  #lang-sw button:hover {
+    background: var(--purple); color: white;
+  }
+
+  /* ── SPIN-IN ── */
+  .spin-in {
+    animation: spinIn .7s cubic-bezier(.34,1.56,.64,1) both;
+  }
+  @keyframes spinIn {
+    from { transform: scale(0) rotate(-180deg); opacity: 0; }
+    to   { transform: scale(1) rotate(0deg);    opacity: 1; }
+  }
+
+  /* ── HIDDEN ── */
+  .hidden { display: none !important; }
+
+  /* ── RESPONSIVE ── */
+  @media(max-width:480px) {
+    .card { padding: 24px 16px; }
+    .complete-actions { flex-direction: column; }
+    .complete-actions .btn-primary { width: 100%; }
+  }
+
+  /* ── BOTTOM NAVIGATION ── */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: linear-gradient(135deg, var(--dark) 0%, #1a0033 100%);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 10px 8px;
+    box-shadow: 0 -4px 20px rgba(0,0,0,.3);
+    z-index: 200;
+  }
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    text-decoration: none;
+    color: #aaa;
+    font-family: 'Baloo 2', cursive;
+    font-size: .65rem;
+    font-weight: 700;
+    transition: all .2s;
+    padding: 4px 12px;
+    border-radius: 12px;
+    cursor: pointer;
+  }
+  .nav-item:hover { color: #fff; }
+  .nav-item.active { color: var(--yellow); }
+  .nav-item .nav-icon {
+    font-size: 1.5rem;
+    transition: transform .2s;
+  }
+  .nav-item:hover .nav-icon { transform: scale(1.15); }
+  .nav-item.active .nav-icon { transform: scale(1.2); }
+
+  /* Badge wall standalone */
+  #badge-only-wall h1 {
+    font-size: 2rem; font-weight: 800; color: var(--dark);
+    text-align: center; margin-bottom: 6px;
+  }
+  #badge-only-wall .total-stars {
+    text-align: center;
+    font-size: 1.1rem; font-weight: 700; color: #777;
+    margin-bottom: 24px;
+  }
+</style>
+</head>
+<body>
+
+<!-- Floating background emojis -->
+<div class="floating-emojis" id="floatEmojis"></div>
+
+<!-- Header -->
+<header id="header">
+  <a href="index.html" class="logo">📚 Kids Digital Comic</a>
+  <div id="lang-sw">
+    <button onclick="setLang('en')" id="btn-en">EN</button>
+    <button onclick="setLang('hi')" id="btn-hi">HI</button>
+    <button onclick="setLang('as')" id="btn-as">AS</button>
+  </div>
+  <div id="star-counter">⭐ <span id="star-count">0</span></div>
+</header>
+
+<div id="app">
+
+  <!-- ── INTRO SCREEN ── -->
+  <div id="intro-screen" class="hidden">
+    <div class="card" style="text-align:center">
+      <div class="big-title" id="intro-title"></div>
+      <div class="genre-badge" id="genre-badge"></div>
+      <div class="story-title" id="story-title-lbl"></div>
+      <div class="sub" id="intro-sub"></div>
+      <button class="btn-primary btn-start" onclick="startQuiz()" id="btn-start-lbl"></button>
+    </div>
+  </div>
+
+  <!-- ── QUIZ SCREEN ── -->
+  <div id="quiz-screen" class="hidden">
+    <div class="card">
+      <div class="progress-wrap">
+        <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+        <span class="progress-label" id="q-counter">1 / 3</span>
+      </div>
+      <div class="question-text" id="question-text"></div>
+      <div class="answers" id="answers-wrap"></div>
+      <div id="feedback"></div>
+    </div>
+  </div>
+
+  <!-- ── COMPLETE SCREEN ── -->
+  <div id="complete-screen" class="hidden">
+    <div class="card">
+      <div class="hero-title" id="complete-title"></div>
+      <div class="stars-total" id="stars-total-lbl"></div>
+      <div class="new-badge-wrap" id="new-badge-wrap"></div>
+      <div class="complete-actions">
+        <button class="btn-primary btn-home" onclick="location.href='index.html'" id="btn-read-more"></button>
+        <button class="btn-primary btn-retry" onclick="location.reload()" id="btn-retry"></button>
+      </div>
+    </div>
+    <!-- Badge wall inside complete screen -->
+    <div id="badge-wall-section" style="margin-top:36px">
+      <h2 id="badge-wall-title-cs"></h2>
+      <div class="badge-grid" id="badge-grid-cs"></div>
+    </div>
+  </div>
+
+  <!-- ── BADGE ONLY (no genre param) ── -->
+  <div id="badge-only-wall" class="hidden">
+    <div class="card">
+      <h1 id="badge-only-title"></h1>
+      <div class="total-stars" id="badge-only-stars"></div>
+      <div class="badge-grid" id="badge-grid-main"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════
+   TRANSLATIONS
+═══════════════════════════════════════════════════════ */
+const T = {
+  en: {
+    quizTime:       "Quiz Time! 🧠✨",
+    answerQ:        "Answer 3 questions about the story!",
+    startQuiz:      "🚀 Start Quiz!",
+    youreAStar:     "You're a STAR! ⭐",
+    starsCollected: (n) => `⭐ ${n} Stars collected!`,
+    readAnother:    "📚 Read Another Story",
+    tryAgain:       "🔁 Try Again",
+    correct:        "Correct! 🎉",
+    oops:           "Oops! Try again 😊",
+    badgeWall:      "🏆 My Badge Wall",
+    totalStars:     (n) => `Total Stars: ⭐ ${n}`,
+    newBadge:       "🎖️ New Badge Unlocked!",
+    starsNeeded:    (n) => `🔒 ${n} stars needed`,
+  },
+  hi: {
+    quizTime:       "क्विज़ टाइम! 🧠✨",
+    answerQ:        "कहानी के बारे में 3 सवालों के जवाब दो!",
+    startQuiz:      "🚀 क्विज़ शुरू करें!",
+    youreAStar:     "तुम स्टार हो! ⭐",
+    starsCollected: (n) => `⭐ ${n} सितारे इकट्ठे!`,
+    readAnother:    "📚 और कहानी पढ़ें",
+    tryAgain:       "🔁 फिर से कोशिश करें",
+    correct:        "सही जवाब! 🎉",
+    oops:           "अरे! फिर कोशिश करो 😊",
+    badgeWall:      "🏆 मेरी बैज दीवार",
+    totalStars:     (n) => `कुल सितारे: ⭐ ${n}`,
+    newBadge:       "🎖️ नया बैज मिला!",
+    starsNeeded:    (n) => `🔒 ${n} सितारे चाहिए`,
+  },
+  as: {
+    quizTime:       "কুইজ সময়! 🧠✨",
+    answerQ:        "গল্পৰ বিষয়ে ৩টা প্ৰশ্নৰ উত্তৰ দিয়া!",
+    startQuiz:      "🚀 কুইজ আৰম্ভ কৰক!",
+    youreAStar:     "তুমি এটা তৰা! ⭐",
+    starsCollected: (n) => `⭐ ${n} তৰা সংগ্ৰহ!`,
+    readAnother:    "📚 আন গল্প পঢ়ক",
+    tryAgain:       "🔁 আকৌ চেষ্টা কৰক",
+    correct:        "শুদ্ধ! 🎉",
+    oops:           "আৰে! আকৌ চেষ্টা কৰা 😊",
+    badgeWall:      "🏆 মোৰ বেজ দেৱাল",
+    totalStars:     (n) => `মুঠ তৰা: ⭐ ${n}`,
+    newBadge:       "🎖️ নতুন বেজ!",
+    starsNeeded:    (n) => `🔒 ${n} তৰা লাগিব`,
+  }
+};
+
+/* ═══════════════════════════════════════════════════════
+   QUIZ DATA
+═══════════════════════════════════════════════════════ */
+const QUIZZES = {
+  fairy: {
+    emoji: "🧚",
+    title: "Zara and the Rainbow Dragon",
+    questions: [
+      {
+        q: "What did Zara and the dragon paint?",
+        options: ["The sky 🌈", "A house 🏠", "Rocks 🪨"],
+        answer: "The sky 🌈"
+      },
+      {
+        q: "How did Zara meet the dragon?",
+        options: ["She found it flying", "She found it crying in a cave", "It knocked on her door 🚪"],
+        answer: "She found it crying in a cave"
+      },
+      {
+        q: "What was the dragon missing?",
+        options: ["Its wings 🪽", "Its fire 🔥", "Its colours"],
+        answer: "Its colours"
+      },
+      {
+        q: "Where did Zara live?",
+        options: ["In a castle 🏰", "In a cosy cottage 🏡", "In a treehouse 🌳"],
+        answer: "In a cosy cottage 🏡"
+      },
+      {
+        q: "What colour was the dragon?",
+        options: ["Golden yellow ✨", "Grey and dull 🩶", "Bright red 🔴"],
+        answer: "Grey and dull 🩶"
+      },
+      {
+        q: "How did the story end?",
+        options: ["The dragon flew away alone", "Zara and the dragon became friends 🤝", "The dragon went back to sleep"],
+        answer: "Zara and the dragon became friends 🤝"
+      }
+    ]
+  },
+  myth: {
+    emoji: "🏹",
+    title: "Arjun and the Magic Bow",
+    questions: [
+      {
+        q: "Who guided Arjun in the forest?",
+        options: ["A talking peacock 🦚", "A wise owl 🦉", "A magic deer 🦌"],
+        answer: "A talking peacock 🦚"
+      },
+      {
+        q: "What did the bow glow with?",
+        options: ["Fire 🔥", "Magic light ✨", "Rainbow colours 🌈"],
+        answer: "Magic light ✨"
+      },
+      {
+        q: "What did Arjun save?",
+        options: ["A lost princess 👸", "His village", "A magic forest 🌳"],
+        answer: "His village"
+      },
+      {
+        q: "Where did Arjun find the magic bow?",
+        options: ["In a river 🌊", "Deep in the forest 🌲", "On a mountain top ⛰️"],
+        answer: "Deep in the forest 🌲"
+      },
+      {
+        q: "What skill did Arjun use to defeat the enemy?",
+        options: ["Archery 🏹", "Sword fighting ⚔️", "Magic spells 🪄"],
+        answer: "Archery 🏹"
+      },
+      {
+        q: "What did the peacock tell Arjun to do?",
+        options: ["Run away quickly 🏃", "Trust in his courage 💪", "Find a new weapon 🗡️"],
+        answer: "Trust in his courage 💪"
+      }
+    ]
+  },
+  animals: {
+    emoji: "🦁",
+    title: "Leo the Lion",
+    questions: [
+      {
+        q: "What was Leo afraid of?",
+        options: ["Loud thunder ⛈️", "Big spiders 🕷️", "The dark 🌑"],
+        answer: "The dark 🌑"
+      },
+      {
+        q: "Who helped Leo feel brave?",
+        options: ["Diya the firefly 🔥", "Mia the mouse 🐭", "Ben the bear 🐻"],
+        answer: "Diya the firefly 🔥"
+      },
+      {
+        q: "What did Diya use to help?",
+        options: ["A magic wand 🪄", "Her glowing light", "A song 🎵"],
+        answer: "Her glowing light"
+      },
+      {
+        q: "Where did Leo and Diya first meet?",
+        options: ["By a waterfall 💧", "Under a big tree 🌳", "In a dark cave 🕳️"],
+        answer: "Under a big tree 🌳"
+      },
+      {
+        q: "What did Leo learn at the end of the story?",
+        options: ["To roar very loudly 🦁", "That it is okay to ask for help 🤝", "How to run faster 🏃"],
+        answer: "That it is okay to ask for help 🤝"
+      },
+      {
+        q: "What kind of animal is Diya?",
+        options: ["A butterfly 🦋", "A firefly ✨", "A bee 🐝"],
+        answer: "A firefly ✨"
+      }
+    ]
+  },
+  space: {
+    emoji: "🚀",
+    title: "Robo and the Missing Moon",
+    questions: [
+      {
+        q: "What was Robo looking for?",
+        options: ["Lost aliens 👽", "A missing moon 🌕", "A broken star 💫"],
+        answer: "A missing moon 🌕"
+      },
+      {
+        q: "Where did Robo travel?",
+        options: ["A black hole 🌀", "The galaxy 🌌", "Planet Mars 🔴"],
+        answer: "The galaxy 🌌"
+      },
+      {
+        q: "What type of character is Robo?",
+        options: ["An astronaut 👨‍🚀", "An alien 👽", "A robot spaceship 🤖"],
+        answer: "A robot spaceship 🤖"
+      },
+      {
+        q: "Who did Robo ask for directions?",
+        options: ["A friendly comet ☄️", "A wise old star 🌟", "A passing satellite 🛰️"],
+        answer: "A wise old star 🌟"
+      },
+      {
+        q: "Where was the missing moon hiding?",
+        options: ["Behind a giant planet 🪐", "Inside a nebula 🌫️", "Under an asteroid 🪨"],
+        answer: "Behind a giant planet 🪐"
+      },
+      {
+        q: "How did Robo feel when the moon was found?",
+        options: ["Tired and ready to sleep 😴", "Happy and proud 🎉", "Scared and confused 😨"],
+        answer: "Happy and proud 🎉"
+      }
+    ]
+  }
+};
+
+/* ═══════════════════════════════════════════════════════
+   BADGE DATA
+═══════════════════════════════════════════════════════ */
+const BADGES = [
+  { id: "first_reader",    emoji: "🌱", name: "First Reader",     stars: 5,  genre: null },
+  { id: "animal_friend",   emoji: "🦁", name: "Animal Friend",    stars: 10, genre: "animals" },
+  { id: "fantasy_dreamer", emoji: "🧚", name: "Fantasy Dreamer",  stars: 10, genre: "fairy" },
+  { id: "mythic_hero",     emoji: "🕉️", name: "Mythic Hero",      stars: 10, genre: "myth" },
+  { id: "space_cadet",     emoji: "🚀", name: "Space Cadet",      stars: 10, genre: "space" },
+  { id: "star_collector",  emoji: "🌟", name: "Star Collector",   stars: 20, genre: null },
+  { id: "super_reader",    emoji: "📖", name: "Super Reader",     stars: 30, genre: null },
+  { id: "comic_champion",  emoji: "👑", name: "Comic Champion",   stars: 40, genre: null }
+];
+
+/* ═══════════════════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════════════════ */
+let lang         = localStorage.getItem('kidsDC_lang') || 'en';
+let totalStars   = parseInt(localStorage.getItem('kidsDC_stars') || '0', 10);
+let unlockedBadges = JSON.parse(localStorage.getItem('kidsDC_badges') || '[]');
+let currentQuiz  = null;
+let currentQIdx  = 0;
+let shuffledQs   = [];
+let quizLocked   = false;
+
+/* ═══════════════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════════════ */
+function init() {
+  updateLangButtons();
+  updateStarCounter();
+  spawnFloatingEmojis();
+
+  const params = new URLSearchParams(window.location.search);
+  const genre  = params.get('genre');
+
+  if (genre && QUIZZES[genre]) {
+    currentQuiz = { genre, ...QUIZZES[genre] };
+    showIntro();
+  } else {
+    showBadgeWallOnly();
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   LANGUAGE
+═══════════════════════════════════════════════════════ */
+function t(key, ...args) {
+  const val = T[lang][key];
+  return typeof val === 'function' ? val(...args) : val;
+}
+function setLang(l) {
+  lang = l;
+  localStorage.setItem('kidsDC_lang', l);
+  updateLangButtons();
+  refreshTexts();
+}
+function updateLangButtons() {
+  ['en','hi','as'].forEach(l => {
+    const b = document.getElementById('btn-' + l);
+    if (b) b.classList.toggle('active', lang === l);
+  });
+}
+
+/* ═══════════════════════════════════════════════════════
+   STAR COUNTER
+═══════════════════════════════════════════════════════ */
+function updateStarCounter() {
+  document.getElementById('star-count').textContent = totalStars;
+}
+function addStars(n, fromEl) {
+  totalStars += n;
+  localStorage.setItem('kidsDC_stars', totalStars);
+  updateStarCounter();
+  if (fromEl) animateStarFly(fromEl, n);
+}
+function animateStarFly(originEl, count) {
+  const counter = document.getElementById('star-counter');
+  const rect    = counter.getBoundingClientRect();
+  for (let i = 0; i < count; i++) {
+    setTimeout(() => {
+      const span = document.createElement('span');
+      span.className = 'star-fly';
+      span.textContent = '⭐';
+      counter.appendChild(span);
+      setTimeout(() => span.remove(), 1000);
+    }, i * 220);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   BADGE LOGIC
+═══════════════════════════════════════════════════════ */
+function checkAndUnlockBadges(genre) {
+  const newlyUnlocked = [];
+  BADGES.forEach(b => {
+    if (unlockedBadges.includes(b.id)) return;
+    const starOk = totalStars >= b.stars;
+    const genreOk = !b.genre || b.genre === genre;
+    if (starOk && genreOk) {
+      unlockedBadges.push(b.id);
+      newlyUnlocked.push(b);
+    }
+  });
+  localStorage.setItem('kidsDC_badges', JSON.stringify(unlockedBadges));
+  return newlyUnlocked;
+}
+
+/* ═══════════════════════════════════════════════════════
+   FLOATING EMOJIS
+═══════════════════════════════════════════════════════ */
+function spawnFloatingEmojis() {
+  const emojis = ['⭐','🌟','💫','✨','🎉','🎈','🌈','🎊','🏆','❤️','🦋','🌸'];
+  const wrap   = document.getElementById('floatEmojis');
+  for (let i = 0; i < 14; i++) {
+    const e = document.createElement('div');
+    e.className = 'fe';
+    e.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    e.style.left  = Math.random() * 100 + '%';
+    e.style.animationDelay   = (Math.random() * 8) + 's';
+    e.style.animationDuration = (6 + Math.random() * 6) + 's';
+    e.style.fontSize = (18 + Math.random() * 24) + 'px';
+    wrap.appendChild(e);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   SHOW INTRO
+═══════════════════════════════════════════════════════ */
+function showIntro() {
+  document.getElementById('intro-screen').classList.remove('hidden');
+  refreshTexts();
+
+  gsap.from('#intro-screen .card', { y: 60, opacity: 0, duration: 0.8, ease: 'back.out(1.7)' });
+  gsap.from('#genre-badge', { scale: 0, rotation: -30, duration: 0.7, delay: 0.3, ease: 'back.out(2)' });
+}
+
+function refreshTexts() {
+  if (document.getElementById('intro-title'))
+    document.getElementById('intro-title').textContent = t('quizTime');
+  if (document.getElementById('intro-sub'))
+    document.getElementById('intro-sub').textContent = t('answerQ');
+  if (document.getElementById('btn-start-lbl'))
+    document.getElementById('btn-start-lbl').textContent = t('startQuiz');
+  if (currentQuiz) {
+    if (document.getElementById('genre-badge'))
+      document.getElementById('genre-badge').textContent = currentQuiz.emoji;
+    if (document.getElementById('story-title-lbl'))
+      document.getElementById('story-title-lbl').textContent = '📖 ' + currentQuiz.title;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   START QUIZ
+═══════════════════════════════════════════════════════ */
+function startQuiz() {
+  const pool = shuffle([...currentQuiz.questions]).slice(0, 3);
+  shuffledQs = pool.map((q) => ({
+    ...q,
+    shuffledOptions: shuffle([...q.options])
+  }));
+  currentQIdx = 0;
+
+  document.getElementById('intro-screen').classList.add('hidden');
+  document.getElementById('quiz-screen').classList.remove('hidden');
+
+  gsap.from('#quiz-screen .card', { y: 40, opacity: 0, duration: 0.6, ease: 'back.out(1.4)' });
+  renderQuestion();
+}
+
+/* ═══════════════════════════════════════════════════════
+   RENDER QUESTION
+═══════════════════════════════════════════════════════ */
+function renderQuestion() {
+  const q = shuffledQs[currentQIdx];
+  quizLocked = false;
+
+  // Progress
+  const pct = (currentQIdx / shuffledQs.length) * 100;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('q-counter').textContent = `${currentQIdx + 1} / ${shuffledQs.length}`;
+
+  // Question
+  const qtEl = document.getElementById('question-text');
+  qtEl.textContent = q.q;
+  gsap.from(qtEl, { y: -20, opacity: 0, duration: 0.4, ease: 'power2.out' });
+
+  // Answers
+  const wrap = document.getElementById('answers-wrap');
+  wrap.innerHTML = '';
+  const letters = ['A', 'B', 'C'];
+  q.shuffledOptions.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'ans-btn';
+    btn.innerHTML = `<span class="btn-letter">${letters[i]}</span>${opt}`;
+    btn.onclick = () => handleAnswer(btn, opt, q.answer);
+    wrap.appendChild(btn);
+    gsap.from(btn, { x: -30, opacity: 0, duration: 0.35, delay: i * 0.1, ease: 'power2.out' });
+  });
+
+  // Clear feedback
+  const fb = document.getElementById('feedback');
+  fb.textContent = '';
+  fb.classList.remove('show','green','red');
+}
+
+/* ═══════════════════════════════════════════════════════
+   HANDLE ANSWER
+═══════════════════════════════════════════════════════ */
+function handleAnswer(btn, selected, correct) {
+  if (quizLocked) return;
+
+  if (selected === correct) {
+    quizLocked = true;
+    btn.classList.add('correct');
+    btn.innerHTML = btn.innerHTML + ' ✅';
+
+    // Confetti burst
+    confetti({
+      particleCount: 150,
+      spread: 70,
+      origin: { y: 0.6 },
+      colors: ['#FF6FB7','#FFD93D','#4FC3F7','#69D179','#FF9A3C','#C084FC']
+    });
+
+    // Feedback
+    showFeedback(t('correct'), 'green');
+
+    // Add 1 star
+    addStars(1, btn);
+
+    // Auto-advance
+    setTimeout(() => {
+      btn.classList.remove('correct');
+      currentQIdx++;
+      if (currentQIdx < shuffledQs.length) {
+        renderQuestion();
+        gsap.from('#quiz-screen .card', { scale: 0.95, opacity: 0.7, duration: 0.35, ease: 'power2.out' });
+      } else {
+        showComplete();
+      }
+    }, 1500);
+
+  } else {
+    btn.classList.add('wrong');
+    showFeedback(t('oops'), 'red');
+    setTimeout(() => btn.classList.remove('wrong'), 600);
+    // Do NOT lock — let child try again
+  }
+}
+
+function showFeedback(msg, cls) {
+  const fb = document.getElementById('feedback');
+  fb.textContent = msg;
+  fb.className = 'show ' + cls;
+  gsap.from(fb, { scale: 0.7, opacity: 0, duration: 0.3, ease: 'back.out(2)' });
+}
+
+/* ═══════════════════════════════════════════════════════
+   COMPLETION
+═══════════════════════════════════════════════════════ */
+function showComplete() {
+  // Bonus 3 stars for completing quiz
+  addStars(2); // already got 3 from correct answers (1 per Q), give bonus 2
+
+  // Unlock badges
+  const newBadges = checkAndUnlockBadges(currentQuiz.genre);
+
+  document.getElementById('quiz-screen').classList.add('hidden');
+  document.getElementById('complete-screen').classList.remove('hidden');
+
+  // Update text
+  document.getElementById('complete-title').textContent = t('youreAStar');
+  document.getElementById('stars-total-lbl').textContent = t('starsCollected', totalStars);
+  document.getElementById('btn-read-more').textContent = t('readAnother');
+  document.getElementById('btn-retry').textContent = t('tryAgain');
+  document.getElementById('badge-wall-title-cs').textContent = t('badgeWall');
+
+  // GSAP animations
+  gsap.from('#complete-screen .hero-title', { scale: 0, rotation: -10, opacity: 0, duration: 0.8, ease: 'back.out(2)', delay: 0.2 });
+  gsap.from('#complete-screen .stars-total', { y: 30, opacity: 0, duration: 0.5, delay: 0.6 });
+
+  // Full-screen confetti explosion
+  setTimeout(() => {
+    const duration = 3000;
+    const end = Date.now() + duration;
+    const frame = () => {
+      confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#FF6FB7','#FFD93D','#4FC3F7'] });
+      confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#69D179','#FF9A3C','#C084FC'] });
+      if (Date.now() < end) requestAnimationFrame(frame);
+    };
+    frame();
+  }, 400);
+
+  // New badge display
+  const nbWrap = document.getElementById('new-badge-wrap');
+  nbWrap.innerHTML = '';
+  if (newBadges.length > 0) {
+    const labelEl = document.createElement('div');
+    labelEl.className = 'new-badge-label';
+    labelEl.textContent = t('newBadge');
+    nbWrap.appendChild(labelEl);
+    newBadges.forEach((badge, i) => {
+      const bdEl = document.createElement('div');
+      bdEl.className = 'badge-unlocked-display spin-in';
+      bdEl.style.animationDelay = (0.8 + i * 0.3) + 's';
+      bdEl.innerHTML = `<span class="badge-emoji">${badge.emoji}</span><span class="badge-name">${badge.name}</span>`;
+      nbWrap.appendChild(bdEl);
+    });
+  }
+
+  // Badge grid
+  renderBadgeGrid('badge-grid-cs');
+}
+
+/* ═══════════════════════════════════════════════════════
+   BADGE GRID RENDER
+═══════════════════════════════════════════════════════ */
+function renderBadgeGrid(containerId) {
+  const grid = document.getElementById(containerId);
+  if (!grid) return;
+  grid.innerHTML = '';
+
+  BADGES.forEach(b => {
+    const unlocked = unlockedBadges.includes(b.id);
+    const item = document.createElement('div');
+    item.className = 'badge-item ' + (unlocked ? 'unlocked' : 'locked');
+    if (unlocked) {
+      item.innerHTML = `
+        <span class="b-emoji">${b.emoji}</span>
+        <span class="b-name">${b.name}</span>
+        <span class="b-stars">✅ Unlocked!</span>
+      `;
+    } else {
+      item.innerHTML = `
+        <span class="b-emoji">${b.emoji}</span>
+        <span class="b-name">${b.name}</span>
+        <span class="b-stars">${t('starsNeeded', b.stars)}</span>
+      `;
+    }
+    grid.appendChild(item);
+  });
+}
+
+/* ═══════════════════════════════════════════════════════
+   BADGE WALL ONLY (no genre)
+═══════════════════════════════════════════════════════ */
+function showBadgeWallOnly() {
+  document.getElementById('badge-only-wall').classList.remove('hidden');
+  document.getElementById('badge-only-title').textContent = t('badgeWall');
+  document.getElementById('badge-only-stars').textContent = t('totalStars', totalStars);
+  renderBadgeGrid('badge-grid-main');
+
+  gsap.from('#badge-only-wall .card', { y: 50, opacity: 0, duration: 0.8, ease: 'back.out(1.4)' });
+}
+
+/* ═══════════════════════════════════════════════════════
+   UTILS
+═══════════════════════════════════════════════════════ */
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+/* ═══════════════════════════════════════════════════════
+   BOOT
+═══════════════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', init);
+
+/* ═══════════════════════════════════════════════════════
+   NAVIGATION FUNCTIONS
+═══════════════════════════════════════════════════════ */
+function goToHome() { window.location.href = 'index.html'; }
+function goToStories() { window.location.href = 'index.html#stories'; }
+function goToVoice() { window.location.href = 'audio-narrator.html'; }
+</script>
+
+<!-- ── BOTTOM NAVIGATION ── -->
+<nav class="bottom-nav">
+  <div class="nav-item" id="navHome" onclick="goToHome()">
+    <span class="nav-icon">🏠</span>
+    <span>Home</span>
+  </div>
+  <div class="nav-item" id="navStories" onclick="goToStories()">
+    <span class="nav-icon">📚</span>
+    <span>Stories</span>
+  </div>
+  <div class="nav-item active" id="navQuiz">
+    <span class="nav-icon">🧠</span>
+    <span>Quiz</span>
+  </div>
+  <div class="nav-item" id="navBadges" onclick="showBadgeWallOnly()">
+    <span class="nav-icon">🏆</span>
+    <span>Badges</span>
+  </div>
+  <div class="nav-item" id="navVoice" onclick="goToVoice()">
+    <span class="nav-icon">🎙️</span>
+    <span>Voice</span>
+  </div>
+</nav>
+
+</body>
+</html>
