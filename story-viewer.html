@@ -320,9 +320,8 @@ body {
 
 /* Panel Wrapper */
 .panel-wrapper {
-  width: 100%; position: relative; overflow: visible;
+  width: 100%; position: relative; overflow: hidden;
   border-radius: 22px;
-  perspective: 1500px;
 }
 
 /* Panel Card */
@@ -336,52 +335,14 @@ body {
   flex-direction: column;
   position: relative; overflow: hidden;
   will-change: transform, opacity;
-  transform-style: preserve-3d;
-  background-color: #fff;
-}
-.panel-card::after {
-  content: ''; position: absolute; inset: 0;
-  background: linear-gradient(to right, rgba(0,0,0,0.4) 0%, transparent 20%, transparent 80%, rgba(255,255,255,0.4) 100%);
-  opacity: 0; pointer-events: none; transition: opacity 0.3s; z-index: 20;
+  transition: transform .38s cubic-bezier(.4,0,.2,1), opacity .38s ease;
 }
 
-.panel-card.anim-exit-left  { animation: pageFlipLeftExit 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
-.panel-card.anim-exit-left::after { opacity: 1; }
-.panel-card.anim-exit-right { animation: pageFlipRightExit 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
-.panel-card.anim-exit-right::after { opacity: 1; background: linear-gradient(to left, rgba(0,0,0,0.4) 0%, transparent 20%); }
-.panel-card.anim-enter-left  { animation: pageFlipLeftEnter 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
-.panel-card.anim-enter-right { animation: pageFlipRightEnter 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
-.panel-card.anim-settled { transform: none; opacity: 1; }
-
-@keyframes pageFlipLeftExit {
-  0% { transform: rotateY(0deg); opacity: 1; transform-origin: left center; }
-  100% { transform: rotateY(-90deg) scale(0.95); opacity: 0; transform-origin: left center; }
-}
-@keyframes pageFlipRightExit {
-  0% { transform: rotateY(0deg); opacity: 1; transform-origin: right center; }
-  100% { transform: rotateY(90deg) scale(0.95); opacity: 0; transform-origin: right center; }
-}
-@keyframes pageFlipLeftEnter {
-  0% { transform: rotateY(90deg) scale(0.95); opacity: 0; transform-origin: right center; }
-  100% { transform: rotateY(0deg); opacity: 1; transform-origin: right center; }
-}
-@keyframes pageFlipRightEnter {
-  0% { transform: rotateY(-90deg) scale(0.95); opacity: 0; transform-origin: left center; }
-  100% { transform: rotateY(0deg); opacity: 1; transform-origin: left center; }
-}
-
-/* ═══════════════════════════════════════
-   PARTICLE CANVAS & MAGIC SPOTS
-   ═══════════════════════════════════════ */
-#particleCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2; }
-.magic-spot { position: absolute; width: 50px; height: 50px; transform: translate(-50%, -50%); border-radius: 50%; cursor: pointer; z-index: 5; -webkit-tap-highlight-color: transparent; }
-.magic-hint { position: absolute; top: 50px; left: 50%; transform: translateX(-50%) translateY(-20px); background: rgba(0,0,0,0.6); color: #fff; padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; pointer-events: none; opacity: 0; z-index: 10; transition: opacity 0.5s, transform 0.5s; backdrop-filter: blur(4px); border: 2px solid rgba(255,255,255,0.4); }
-.magic-hint.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-.music-btn { background: var(--dark); border: 3px solid var(--dark); color: #fff; width: 36px; height: 36px; border-radius: 50%; font-size: 16px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all .2s; box-shadow: 3px 3px 0 rgba(0,0,0,0.5); flex-shrink: 0; }
-.music-btn:hover { transform: translate(-2px, -2px); box-shadow: 5px 5px 0 rgba(0,0,0,0.5); }
-.music-btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 rgba(0,0,0,0.5); }
-.music-btn.playing { background: var(--purple); color: var(--yellow); }
-
+.panel-card.anim-exit-left  { transform: translateX(-112%); opacity: 0; }
+.panel-card.anim-exit-right { transform: translateX( 112%); opacity: 0; }
+.panel-card.anim-enter-left  { transform: translateX(-112%); opacity: 0; transition: none; }
+.panel-card.anim-enter-right { transform: translateX( 112%); opacity: 0; transition: none; }
+.panel-card.anim-settled { transform: translateX(0); opacity: 1; }
 
 /* panel-badge */
 .panel-badge {
@@ -426,13 +387,7 @@ body {
   user-select: none;
   gap: 4px;
   min-height: 160px;
-  transition: all 0.3s ease;
 }
-.panel-card.has-image .emoji-scene {
-  min-height: 60px;
-  flex: 1;
-}
-
 .em {
   display: inline-block;
   font-size: clamp(3.8rem, 9vw, 5.5rem);
@@ -464,16 +419,6 @@ body {
   box-shadow: 6px 8px 0 var(--dark);
   text-align: center;
   line-height: 1.45;
-  transition: all 0.3s ease;
-}
-.panel-card.has-image .speech-bubble {
-  margin: 8px 30px;
-  padding: 8px 14px;
-  font-size: 0.9rem;
-  background: rgba(255,255,255,0.85);
-  backdrop-filter: blur(8px);
-  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-  border-width: 2px;
 }
 .speech-bubble::before {
   content: '';
@@ -493,9 +438,6 @@ body {
   border-right: 5px solid transparent;
   border-bottom: 12px solid #fff;
 }
-.panel-card.has-image .speech-bubble::before,
-.panel-card.has-image .speech-bubble::after { display: none; }
-
 
 /* Narration Bar */
 .narration-bar {
@@ -508,17 +450,7 @@ body {
   text-align: center; line-height: 1.5;
   border-top: 2px solid rgba(255,255,255,.15);
   border-radius: 0 0 16px 16px;
-  transition: all 0.3s ease;
 }
-.panel-card.has-image .narration-bar {
-  margin-top: 0;
-  padding: 8px 16px;
-  font-size: 0.85rem;
-  background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%);
-  border-top: none;
-  backdrop-filter: none;
-}
-
 
 /* Dots */
 .dots-row {
@@ -690,31 +622,6 @@ body {
   .audio-controls { padding: 10px 12px; gap: 8px; }
   .audio-btn { width: 38px; height: 38px; font-size: 1rem; }
 }
-
-/* ═══════════════════════════════════════
-   FIREFLIES / MAGIC DUST
-   ═══════════════════════════════════════ */
-.firefly {
-  position: absolute;
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 1;
-  animation: wander 8s infinite ease-in-out alternate;
-  opacity: 0.8;
-}
-
-@keyframes wander {
-  0% { transform: translate(0, 0) scale(1); opacity: 0.2; }
-  25% { transform: translate(30px, -40px) scale(1.5); opacity: 1; }
-  50% { transform: translate(-20px, -80px) scale(0.8); opacity: 0.4; }
-  75% { transform: translate(40px, -120px) scale(1.2); opacity: 0.9; }
-  100% { transform: translate(-30px, -160px) scale(1); opacity: 0; }
-}
-
-.emoji-scene .em {
-  filter: drop-shadow(0 10px 15px rgba(0,0,0,0.4));
-}
 </style>
 </head>
 <body>
@@ -727,7 +634,6 @@ body {
     <span class="story-title-bar" id="storyTitleBar">Story</span>
   </div>
   <div class="top-right">
-    <button class="music-btn" id="musicBtn" onclick="toggleMusic()" title="Toggle Ambience">🔇</button>
     <button class="lang-btn active" id="btn-en" onclick="setLang('en')">EN</button>
     <button class="lang-btn"        id="btn-hi" onclick="setLang('hi')">HI</button>
     <button class="lang-btn"        id="btn-as" onclick="setLang('as')">AS</button>
@@ -791,10 +697,6 @@ body {
       <div class="tap-to-hear" id="tapToHear" onclick="playNarration()">
         🔊 Read to Me
       </div>
-
-      <canvas id="particleCanvas"></canvas>
-      <div class="magic-hint" id="magicHint">✨ Find the magic!</div>
-      <div id="magicSpotsContainer"></div>
 
       <div class="emoji-scene" id="emojiScene" onclick="zoomEmojis(this)">
         <!-- Emojis injected by JS -->
@@ -870,48 +772,48 @@ const STORIES = {
     titleKey: 'title_fairy',
     genreEmoji: '🧚',
     panels: [
-      { bg:'#FFB3CC', img:'assets/story_panels/fairy_1.jpeg', emojis:['👧','🌲','🌲'],    dk:false, d:'f1d', n:'f1n', spots:[{x:'80%',y:'70%'},{x:'15%',y:'50%'},{x:'50%',y:'30%'}] },
-      { bg:'#FFEE88', img:'assets/story_panels/fairy_2.jpeg', emojis:['👧','🐉','😢'],    dk:false, d:'f2d', n:'f2n', spots:[{x:'20%',y:'40%'},{x:'70%',y:'80%'},{x:'50%',y:'15%'}] },
-      { bg:'#98E8BE', img:'assets/story_panels/fairy_3.jpeg', emojis:['🐉','💔','🎨'],    dk:false, d:'f3d', n:'f3n', spots:[{x:'10%',y:'90%'},{x:'60%',y:'40%'},{x:'85%',y:'20%'}] },
-      { bg:'#87C8F8', img:'assets/story_panels/fairy_4.jpeg', emojis:['👧','💡','🌈'],    dk:false, d:'f4d', n:'f4n', spots:[{x:'30%',y:'30%'},{x:'70%',y:'70%'},{x:'40%',y:'85%'}] },
-      { bg:'#FFB870', img:'assets/story_panels/fairy_5.jpeg', emojis:['🌸','🌺','🌼'],    dk:false, d:'f5d', n:'f5n', spots:[{x:'25%',y:'65%'},{x:'75%',y:'25%'},{x:'15%',y:'15%'}] },
-      { bg:'#C8A0FF', img:'assets/story_panels/fairy_6.jpeg', emojis:['🐉','🌈','✨'],    dk:false, d:'f6d', n:'f6n', spots:[{x:'50%',y:'50%'},{x:'80%',y:'80%'},{x:'20%',y:'20%'}] },
+      { bg:'#FFB3CC', emojis:['👧','🌲','🌲'],    dk:false, d:'f1d', n:'f1n' },
+      { bg:'#FFEE88', emojis:['👧','🐉','😢'],    dk:false, d:'f2d', n:'f2n' },
+      { bg:'#98E8BE', emojis:['🐉','💔','🎨'],    dk:false, d:'f3d', n:'f3n' },
+      { bg:'#87C8F8', emojis:['👧','💡','🌈'],    dk:false, d:'f4d', n:'f4n' },
+      { bg:'#FFB870', emojis:['🌸','🌺','🌼'],    dk:false, d:'f5d', n:'f5n' },
+      { bg:'#C8A0FF', emojis:['🐉','🌈','✨'],    dk:false, d:'f6d', n:'f6n' },
     ]
   },
   myth: {
     titleKey: 'title_myth',
     genreEmoji: '🏹',
     panels: [
-      { bg:'#A8D5A2', img:'assets/story_panels/myth_1.jpeg', emojis:['🧒','🌳','✨'],    dk:false, d:'m1d', n:'m1n', spots:[{x:'20%',y:'50%'},{x:'80%',y:'30%'},{x:'50%',y:'80%'}] },
-      { bg:'#FFE08A', img:'assets/story_panels/myth_2.jpeg', emojis:['🏹','✨','💫'],    dk:false, d:'m2d', n:'m2n', spots:[{x:'10%',y:'20%'},{x:'90%',y:'50%'},{x:'40%',y:'70%'}] },
-      { bg:'#87CEEB', img:'assets/story_panels/myth_3.jpeg', emojis:['🦚','🧒','🌟'],   dk:false, d:'m3d', n:'m3n', spots:[{x:'70%',y:'20%'},{x:'30%',y:'60%'},{x:'80%',y:'80%'}] },
-      { bg:'#F9A8D4', img:'assets/story_panels/myth_4.jpeg', emojis:['🏘️','⛈️','😨'],  dk:false, d:'m4d', n:'m4n', spots:[{x:'15%',y:'15%'},{x:'85%',y:'85%'},{x:'50%',y:'40%'}] },
-      { bg:'#C8B0FF', img:'assets/story_panels/myth_5.jpeg', emojis:['🧒','🏹','⚡'],   dk:false, d:'m5d', n:'m5n', spots:[{x:'40%',y:'40%'},{x:'70%',y:'30%'},{x:'20%',y:'80%'}] },
-      { bg:'#A8D5A2', img:'assets/story_panels/myth_6.jpeg', emojis:['🏘️','☀️','🎉'],  dk:false, d:'m6d', n:'m6n', spots:[{x:'25%',y:'75%'},{x:'60%',y:'20%'},{x:'85%',y:'60%'}] },
+      { bg:'#A8D5A2', emojis:['🧒','🌳','✨'],    dk:false, d:'m1d', n:'m1n' },
+      { bg:'#FFE08A', emojis:['🏹','✨','💫'],    dk:false, d:'m2d', n:'m2n' },
+      { bg:'#87CEEB', emojis:['🦚','🧒','🌟'],   dk:false, d:'m3d', n:'m3n' },
+      { bg:'#F9A8D4', emojis:['🏘️','⛈️','😨'],  dk:false, d:'m4d', n:'m4n' },
+      { bg:'#C8B0FF', emojis:['🧒','🏹','⚡'],   dk:false, d:'m5d', n:'m5n' },
+      { bg:'#A8D5A2', emojis:['🏘️','☀️','🎉'],  dk:false, d:'m6d', n:'m6n' },
     ]
   },
   animals: {
     titleKey: 'title_animals',
     genreEmoji: '🦁',
     panels: [
-      { bg:'#FFB347', img:'assets/story_panels/animals_1.jpeg', emojis:['🦁','🌅','😟'],    dk:false, d:'a1d', n:'a1n', spots:[{x:'30%',y:'80%'},{x:'70%',y:'20%'},{x:'50%',y:'50%'}] },
-      { bg:'#1a1a3e', img:'assets/story_panels/animals_2.jpeg', emojis:['🦁','🍃','😰'],   dk:true,  d:'a2d', n:'a2n', spots:[{x:'15%',y:'60%'},{x:'85%',y:'40%'},{x:'40%',y:'20%'}] },
-      { bg:'#0d2137', img:'assets/story_panels/animals_3.jpeg', emojis:['🦁','✨','🐛'],   dk:true,  d:'a3d', n:'a3n', spots:[{x:'60%',y:'85%'},{x:'20%',y:'30%'},{x:'80%',y:'70%'}] },
-      { bg:'#152040', img:'assets/story_panels/animals_4.jpeg', emojis:['🌙','⭐','🌟'],   dk:true,  d:'a4d', n:'a4n', spots:[{x:'45%',y:'45%'},{x:'75%',y:'85%'},{x:'25%',y:'25%'}] },
-      { bg:'#2d1b69', img:'assets/story_panels/animals_5.jpeg', emojis:['🦁','✨','😊'],   dk:true,  d:'a5d', n:'a5n', spots:[{x:'10%',y:'10%'},{x:'90%',y:'90%'},{x:'50%',y:'50%'}] },
-      { bg:'#1a3a5c', img:'assets/story_panels/animals_6.jpeg', emojis:['🦁','🌕','🎉'],   dk:true,  d:'a6d', n:'a6n', spots:[{x:'35%',y:'65%'},{x:'65%',y:'35%'},{x:'80%',y:'80%'}] },
+      { bg:'#FFB347', emojis:['🦁','🌅','😟'],    dk:false, d:'a1d', n:'a1n' },
+      { bg:'#1a1a3e', emojis:['🦁','🍃','😰'],   dk:true,  d:'a2d', n:'a2n' },
+      { bg:'#0d2137', emojis:['🦁','✨','🐛'],   dk:true,  d:'a3d', n:'a3n' },
+      { bg:'#152040', emojis:['🌙','⭐','🌟'],   dk:true,  d:'a4d', n:'a4n' },
+      { bg:'#2d1b69', emojis:['🦁','✨','😊'],   dk:true,  d:'a5d', n:'a5n' },
+      { bg:'#1a3a5c', emojis:['🦁','🌕','🎉'],   dk:true,  d:'a6d', n:'a6n' },
     ]
   },
   space: {
     titleKey: 'title_space',
     genreEmoji: '🚀',
     panels: [
-      { bg:'#0a0a2e', img:'assets/story_panels/space_1.jpeg', emojis:['🤖','🚀','🌑'],   dk:true,  d:'s1d', n:'s1n', spots:[{x:'20%',y:'30%'},{x:'80%',y:'70%'},{x:'50%',y:'20%'}] },
-      { bg:'#0d1b4b', img:'assets/story_panels/space_2.jpeg', emojis:['🤖','☄️','🔭'],  dk:true,  d:'s2d', n:'s2n', spots:[{x:'70%',y:'40%'},{x:'30%',y:'80%'},{x:'85%',y:'15%'}] },
-      { bg:'#1a0a3e', img:'assets/story_panels/space_3.jpeg', emojis:['👽','🤖','🪐'],  dk:true,  d:'s3d', n:'s3n', spots:[{x:'40%',y:'60%'},{x:'60%',y:'40%'},{x:'10%',y:'90%'}] },
-      { bg:'#0a1a2e', img:'assets/story_panels/space_4.jpeg', emojis:['👽','🕳️','🌕'], dk:true,  d:'s4d', n:'s4n', spots:[{x:'50%',y:'50%'},{x:'15%',y:'15%'},{x:'85%',y:'85%'}] },
-      { bg:'#1a0a4e', img:'assets/story_panels/space_5.jpeg', emojis:['🤖','🌕','💤'],  dk:true,  d:'s5d', n:'s5n', spots:[{x:'80%',y:'30%'},{x:'20%',y:'70%'},{x:'50%',y:'80%'}] },
-      { bg:'#0a2a4e', img:'assets/story_panels/space_6.jpeg', emojis:['🤖','🌕','🪐'],  dk:true,  d:'s6d', n:'s6n', spots:[{x:'30%',y:'20%'},{x:'70%',y:'80%'},{x:'50%',y:'50%'}] },
+      { bg:'#0a0a2e', emojis:['🤖','🚀','🌑'],   dk:true,  d:'s1d', n:'s1n' },
+      { bg:'#0d1b4b', emojis:['🤖','☄️','🔭'],  dk:true,  d:'s2d', n:'s2n' },
+      { bg:'#1a0a3e', emojis:['👽','🤖','🪐'],  dk:true,  d:'s3d', n:'s3n' },
+      { bg:'#0a1a2e', emojis:['👽','🕳️','🌕'], dk:true,  d:'s4d', n:'s4n' },
+      { bg:'#1a0a4e', emojis:['🤖','🌕','💤'],  dk:true,  d:'s5d', n:'s5n' },
+      { bg:'#0a2a4e', emojis:['🤖','🌕','🪐'],  dk:true,  d:'s6d', n:'s6n' },
     ]
   }
 };
@@ -1548,259 +1450,6 @@ function playFanfare(){
 }
 
 /* ═══════════════════════════════════════
-   SENSORY SYSTEM: AMBIENT MUSIC
-   ═══════════════════════════════════════ */
-let musicOscillators = [];
-let musicGain = null;
-let isMusicPlaying = false;
-
-function toggleMusic() {
-  isMusicPlaying = !isMusicPlaying;
-  const btn = document.getElementById('musicBtn');
-  if(isMusicPlaying) {
-    btn.classList.add('playing');
-    btn.textContent = '🎵';
-    playAmbientMusic(state.genre);
-  } else {
-    btn.classList.remove('playing');
-    btn.textContent = '🔇';
-    stopAmbientMusic();
-  }
-}
-
-function stopAmbientMusic() {
-  if (musicGain) {
-    musicGain.gain.setValueAtTime(musicGain.gain.value, getACtx().currentTime);
-    musicGain.gain.exponentialRampToValueAtTime(0.001, getACtx().currentTime + 1);
-    setTimeout(() => {
-      musicOscillators.forEach(o => { try{o.stop();}catch(e){} });
-      musicOscillators = [];
-      if(musicGain) musicGain.disconnect();
-      musicGain = null;
-    }, 1000);
-  }
-}
-
-function playAmbientMusic(genre) {
-  stopAmbientMusic();
-  if(!isMusicPlaying) return;
-  const ctx = getACtx();
-  musicGain = ctx.createGain();
-  musicGain.gain.value = 0.001;
-  musicGain.gain.linearRampToValueAtTime(0.08, ctx.currentTime + 2);
-  musicGain.connect(ctx.destination);
-
-  if (genre === 'fairy') {
-    const freqs = [392, 440, 523, 587, 659];
-    const playChime = () => {
-      if(!isMusicPlaying) return;
-      const osc = ctx.createOscillator();
-      const g = ctx.createGain();
-      osc.type = Math.random() > 0.5 ? 'sine' : 'triangle';
-      osc.frequency.value = freqs[Math.floor(Math.random() * freqs.length)] * 2;
-      osc.connect(g); g.connect(musicGain);
-      g.gain.setValueAtTime(0, ctx.currentTime);
-      g.gain.linearRampToValueAtTime(0.1, ctx.currentTime + 0.1);
-      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 3);
-      osc.start(); osc.stop(ctx.currentTime + 3);
-      setTimeout(playChime, 1000 + Math.random() * 3000);
-    };
-    playChime();
-  } else if (genre === 'myth') {
-    const osc = ctx.createOscillator(); osc.type = 'sawtooth'; osc.frequency.value = 110;
-    const filter = ctx.createBiquadFilter(); filter.type = 'lowpass'; filter.frequency.value = 300;
-    osc.connect(filter); filter.connect(musicGain); osc.start(); musicOscillators.push(osc);
-  } else if (genre === 'animals') {
-    const osc = ctx.createOscillator(); osc.type = 'triangle'; osc.frequency.value = 130;
-    const lfo = ctx.createOscillator(); lfo.type = 'sine'; lfo.frequency.value = 0.5;
-    const lfoGain = ctx.createGain(); lfoGain.gain.value = 5;
-    lfo.connect(lfoGain); lfoGain.connect(osc.frequency);
-    osc.connect(musicGain); lfo.start(); osc.start();
-    musicOscillators.push(lfo, osc);
-  } else if (genre === 'space') {
-    [146.83, 174.61, 220.00].forEach(f => {
-      const osc = ctx.createOscillator(); osc.type = 'sine'; osc.frequency.value = f;
-      osc.connect(musicGain); osc.start(); musicOscillators.push(osc);
-    });
-  }
-}
-
-/* ═══════════════════════════════════════
-   SENSORY SYSTEM: TRANSITION SFX
-   ═══════════════════════════════════════ */
-function playTransitionSFX(genre) {
-  if (state.muted) return;
-  try {
-    const ctx = getACtx();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.connect(gain); gain.connect(ctx.destination);
-    
-    if (genre === 'fairy') {
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(800, ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(1600, ctx.currentTime + 0.2);
-      gain.gain.setValueAtTime(0.2, ctx.currentTime);
-      gain.gain.linearRampToValueAtTime(0.001, ctx.currentTime + 0.2);
-      osc.start(); osc.stop(ctx.currentTime + 0.2);
-    } else if (genre === 'myth') {
-      osc.type = 'sawtooth';
-      const filter = ctx.createBiquadFilter();
-      filter.type = 'bandpass';
-      filter.frequency.setValueAtTime(2000, ctx.currentTime);
-      filter.frequency.exponentialRampToValueAtTime(200, ctx.currentTime + 0.3);
-      osc.frequency.setValueAtTime(150, ctx.currentTime);
-      osc.disconnect(); osc.connect(filter); filter.connect(gain);
-      gain.gain.setValueAtTime(0.3, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
-      osc.start(); osc.stop(ctx.currentTime + 0.3);
-    } else if (genre === 'animals') {
-      osc.type = 'square';
-      const filter = ctx.createBiquadFilter();
-      filter.type = 'lowpass';
-      filter.frequency.setValueAtTime(400, ctx.currentTime);
-      filter.frequency.linearRampToValueAtTime(50, ctx.currentTime + 0.2);
-      osc.frequency.setValueAtTime(100, ctx.currentTime);
-      osc.disconnect(); osc.connect(filter); filter.connect(gain);
-      gain.gain.setValueAtTime(0.3, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
-      osc.start(); osc.stop(ctx.currentTime + 0.2);
-    } else { // space
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(1000, ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(100, ctx.currentTime + 0.4);
-      gain.gain.setValueAtTime(0.2, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
-      osc.start(); osc.stop(ctx.currentTime + 0.4);
-    }
-  } catch(e) { playPop(); }
-}
-
-/* ═══════════════════════════════════════
-   SENSORY SYSTEM: PARTICLES
-   ═══════════════════════════════════════ */
-let particleAnimFrame = null;
-let particles = [];
-function initParticles(genre) {
-  const canvas = document.getElementById('particleCanvas');
-  const ctx = canvas.getContext('2d');
-  if(!canvas || !ctx) return;
-  const resize = () => {
-    canvas.width = canvas.parentElement.offsetWidth;
-    canvas.height = canvas.parentElement.offsetHeight;
-  };
-  resize(); window.onresize = resize;
-  
-  if(particleAnimFrame) cancelAnimationFrame(particleAnimFrame);
-  particles = [];
-  
-  const emojis = {
-    fairy: ['✨','⭐','💖'],
-    myth: ['🪷','🍃','💫'],
-    animals: ['🐾','🍃'],
-    space: ['☄️','⭐','🌟']
-  }[genre] || ['✨'];
-
-  for(let i=0; i<15; i++) {
-    particles.push({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      vx: (Math.random() - 0.5) * 1,
-      vy: genre==='fairy' ? -1 - Math.random() : (genre==='myth' ? 1+Math.random() : Math.random()-0.5),
-      size: 10 + Math.random()*15,
-      char: emojis[Math.floor(Math.random()*emojis.length)],
-      alpha: Math.random()
-    });
-  }
-
-  function loop() {
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    particles.forEach(p => {
-      if(genre === 'space') { p.vx = 2; p.vy = 2; }
-      else if(genre === 'myth') { p.vx = Math.sin(Date.now()/1000 + p.size)*2; }
-      else if(genre === 'animals') { p.vx = 1; p.vy = 1; }
-      
-      p.x += p.vx; p.y += p.vy;
-      p.alpha += 0.02 * (Math.random() - 0.5);
-      if(p.alpha < 0) p.alpha = 0; if(p.alpha > 0.8) p.alpha = 0.8;
-      
-      if(p.x < -50) p.x = canvas.width + 50;
-      if(p.x > canvas.width + 50) p.x = -50;
-      if(p.y < -50) p.y = canvas.height + 50;
-      if(p.y > canvas.height + 50) p.y = -50;
-      
-      ctx.globalAlpha = p.alpha;
-      ctx.font = `${p.size}px Arial`;
-      ctx.fillText(p.char, p.x, p.y);
-    });
-    particleAnimFrame = requestAnimationFrame(loop);
-  }
-  loop();
-}
-
-/* ═══════════════════════════════════════
-   SENSORY SYSTEM: MAGIC SPOTS
-   ═══════════════════════════════════════ */
-function renderMagicSpots(spots) {
-  const container = document.getElementById('magicSpotsContainer');
-  if(!container) return;
-  container.innerHTML = '';
-  spots.forEach((spot, i) => {
-    const el = document.createElement('div');
-    el.className = 'magic-spot';
-    el.style.left = spot.x;
-    el.style.top = spot.y;
-    el.onclick = (e) => {
-      e.stopPropagation();
-      fireMagicBurst(e.clientX, e.clientY, state.genre);
-      playTransitionSFX(state.genre);
-    };
-    container.appendChild(el);
-  });
-}
-
-function showMagicHint() {
-  const hint = document.getElementById('magicHint');
-  if(hint) {
-    hint.classList.add('show');
-    setTimeout(() => hint.classList.remove('show'), 3000);
-  }
-}
-
-function fireMagicBurst(clientX, clientY, genre) {
-  if(!window.gsap) return;
-  const emojis = {
-    fairy: ['✨','💖','🌟'],
-    myth: ['💫','🪷','✨'],
-    animals: ['🐾','🌿','✨'],
-    space: ['🚀','☄️','⭐']
-  }[genre] || ['✨'];
-  
-  for(let i=0; i<8; i++) {
-    const el = document.createElement('div');
-    el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-    el.style.position = 'fixed';
-    el.style.left = clientX + 'px';
-    el.style.top = clientY + 'px';
-    el.style.fontSize = '24px';
-    el.style.pointerEvents = 'none';
-    el.style.zIndex = '9999';
-    document.body.appendChild(el);
-    
-    gsap.to(el, {
-      x: (Math.random() - 0.5) * 150,
-      y: (Math.random() - 0.5) * 150 - 50,
-      rotation: Math.random() * 360,
-      opacity: 0,
-      scale: 0.5 + Math.random(),
-      duration: 0.6 + Math.random() * 0.4,
-      ease: 'power2.out',
-      onComplete: () => el.remove()
-    });
-  }
-}
-
-/* ═══════════════════════════════════════
    HELP TOGGLE
    ═══════════════════════════════════════ */
 function toggleHelp() {
@@ -1826,7 +1475,7 @@ function renderPanel(idx){
   const p = story.panels[idx];
   const card = document.getElementById('panelCard');
 
-  card.style.backgroundColor = p.bg;
+  card.style.background = p.bg;
   if(p.dk){
     card.style.borderColor = 'rgba(255,255,255,.18)';
     card.style.boxShadow = '6px 7px 0 rgba(255,255,255,.12), 0 12px 40px rgba(0,0,0,.55)';
@@ -1835,31 +1484,13 @@ function renderPanel(idx){
     card.style.boxShadow = '6px 7px 0 var(--dark), 0 12px 40px rgba(0,0,0,.18)';
   }
 
-  if (p.img) {
-    card.style.backgroundImage = `linear-gradient(to bottom, transparent 30%, rgba(0,0,0,0.6) 100%), url('${p.img}')`;
-    card.style.backgroundSize = 'cover';
-    card.style.backgroundPosition = 'center';
-    card.classList.add('has-image');
-  } else {
-    card.style.backgroundImage = 'none';
-    card.classList.remove('has-image');
-  }
-
   document.getElementById('panelBadge').textContent =
     `${t('panel_lbl')} ${idx+1} ${t('panel_of')} ${story.panels.length}`;
 
   document.getElementById('tapToHear').textContent = t('tap_to_hear');
 
-  if (p.img) {
-    document.getElementById('emojiScene').innerHTML = '';
-  } else {
-    document.getElementById('emojiScene').innerHTML = p.emojis.map(e=>`<span class="em">${e}</span>`).join('');
-  }
-
-  // Engage ambient systems
-  initParticles(state.genre);
-  renderMagicSpots(p.spots || []);
-  showMagicHint();
+  document.getElementById('emojiScene').innerHTML =
+    p.emojis.map(e=>`<span class="em">${e}</span>`).join('');
 
   document.getElementById('speechBubble').textContent = t(p.d);
   document.getElementById('narrationBar').textContent = t(p.n);
@@ -1950,7 +1581,7 @@ function flipPanel(newIdx, dir){
   state.animating = true;
   stopNarration();
 
-  playTransitionSFX(state.genre);
+  playPop();
 
   const card = document.getElementById('panelCard');
   const exitCls  = dir>0 ? 'anim-exit-left'  : 'anim-exit-right';
@@ -1965,17 +1596,17 @@ function flipPanel(newIdx, dir){
 
     renderPanel(newIdx);
 
+    void card.offsetWidth;
+
+    card.classList.remove(enterCls);
+    card.classList.add('anim-settled');
+
     setTimeout(()=>{
-      card.classList.remove(enterCls);
-      card.classList.add('anim-settled');
+      card.classList.remove('anim-settled');
+      state.animating = false;
+    }, 400);
 
-      setTimeout(()=>{
-        card.classList.remove('anim-settled');
-        state.animating = false;
-      }, 450);
-    }, 50);
-
-  }, 400);
+  }, 380);
 }
 
 function zoomEmojis(el){

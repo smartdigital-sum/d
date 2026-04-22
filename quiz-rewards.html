@@ -6,6 +6,8 @@
 <title>Quiz Time! 🧠✨ — Kids Digital Comic</title>
 <meta name="description" content="Test your knowledge with story quizzes and earn badges on Kids Digital Comic." />
 <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#2B0054" />
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
@@ -440,6 +442,9 @@
     padding: 4px 12px;
     border-radius: 12px;
     cursor: pointer;
+    background: none;
+    border: none;
+    outline: none;
   }
   .nav-item:hover { color: #fff; }
   .nav-item.active { color: var(--yellow); }
@@ -449,6 +454,19 @@
   }
   .nav-item:hover .nav-icon { transform: scale(1.15); }
   .nav-item.active .nav-icon { transform: scale(1.2); }
+
+  /* ── REDUCED MOTION ── */
+  @media (prefers-reduced-motion: reduce) {
+    .fe { animation: none; opacity: 0; }
+    #intro-screen .genre-badge { animation: none; }
+    .progress-fill { transition: none; }
+    .ans-btn { transition: none; }
+    .ans-btn.correct { animation: none; }
+    .ans-btn.wrong { animation: none; }
+    .spin-in { animation: none; opacity: 1; transform: none; }
+    .badge-card { animation: none; }
+    .badge-earned { animation: none; }
+  }
 
   /* Badge wall standalone */
   #badge-only-wall h1 {
@@ -732,6 +750,42 @@ const QUIZZES = {
         answer: "Happy and proud 🎉"
       }
     ]
+  },
+  ocean: {
+    emoji: "🐟",
+    title: "Finn the Little Fish",
+    questions: [
+      {
+        q: "What did Finn find when he swam far?",
+        options: ["A glowing pearl 🌟", "A sunken pirate ship ⚓", "A magic shell 🐚"],
+        answer: "A sunken pirate ship ⚓"
+      },
+      {
+        q: "Who did Finn meet near the ship?",
+        options: ["A purple octopus 🐙", "A scary shark 🦈", "A little turtle 🐢"],
+        answer: "A purple octopus 🐙"
+      },
+      {
+        q: "What did the octopus give to Finn?",
+        options: ["A glowing pearl 🌟", "A gold coin 🪙", "A pirate hat 🏴‍☠️"],
+        answer: "A glowing pearl 🌟"
+      },
+      {
+        q: "What kind of eyes did the octopus have?",
+        options: ["Scary eyes", "Sleepy eyes", "Kind eyes"],
+        answer: "Kind eyes"
+      },
+      {
+        q: "What was Finn's pearl doing?",
+        options: ["Glowing in the dark ✨", "Singing a song 🎵", "Bouncing around 🏀"],
+        answer: "Glowing in the dark ✨"
+      },
+      {
+        q: "How did the story end?",
+        options: ["They had a party 🎉", "They went to sleep", "They swam away"],
+        answer: "They had a party 🎉"
+      }
+    ]
   }
 };
 
@@ -744,6 +798,7 @@ const BADGES = [
   { id: "fantasy_dreamer", emoji: "🧚", name: "Fantasy Dreamer",  stars: 10, genre: "fairy" },
   { id: "mythic_hero",     emoji: "🕉️", name: "Mythic Hero",      stars: 10, genre: "myth" },
   { id: "space_cadet",     emoji: "🚀", name: "Space Cadet",      stars: 10, genre: "space" },
+  { id: "ocean_explorer",  emoji: "🌊", name: "Ocean Explorer",   stars: 10, genre: "ocean" },
   { id: "star_collector",  emoji: "🌟", name: "Star Collector",   stars: 20, genre: null },
   { id: "super_reader",    emoji: "📖", name: "Super Reader",     stars: 30, genre: null },
   { id: "comic_champion",  emoji: "👑", name: "Comic Champion",   stars: 40, genre: null }
@@ -1116,27 +1171,27 @@ function goToVoice() { window.location.href = 'audio-narrator.html'; }
 </script>
 
 <!-- ── BOTTOM NAVIGATION ── -->
-<nav class="bottom-nav">
-  <div class="nav-item" id="navHome" onclick="goToHome()">
-    <span class="nav-icon">🏠</span>
+<nav class="bottom-nav" aria-label="Main navigation">
+  <a class="nav-item" id="navHome" href="index.html" aria-label="Go to home">
+    <span class="nav-icon" aria-hidden="true">🏠</span>
     <span>Home</span>
-  </div>
-  <div class="nav-item" id="navStories" onclick="goToStories()">
-    <span class="nav-icon">📚</span>
+  </a>
+  <a class="nav-item" id="navStories" href="index.html#stories" aria-label="Go to stories">
+    <span class="nav-icon" aria-hidden="true">📚</span>
     <span>Stories</span>
-  </div>
-  <div class="nav-item active" id="navQuiz">
-    <span class="nav-icon">🧠</span>
+  </a>
+  <div class="nav-item active" id="navQuiz" aria-current="page">
+    <span class="nav-icon" aria-hidden="true">🧠</span>
     <span>Quiz</span>
   </div>
-  <div class="nav-item" id="navBadges" onclick="showBadgeWallOnly()">
-    <span class="nav-icon">🏆</span>
+  <button class="nav-item" id="navBadges" onclick="showBadgeWallOnly()" aria-label="View badges">
+    <span class="nav-icon" aria-hidden="true">🏆</span>
     <span>Badges</span>
-  </div>
-  <div class="nav-item" id="navVoice" onclick="goToVoice()">
-    <span class="nav-icon">🎙️</span>
+  </button>
+  <a class="nav-item" id="navVoice" href="audio-narrator.html" aria-label="Go to voice narrator">
+    <span class="nav-icon" aria-hidden="true">🎙️</span>
     <span>Voice</span>
-  </div>
+  </a>
 </nav>
 
 </body>

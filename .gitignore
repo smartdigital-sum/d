@@ -1,2 +1,25 @@
+# Local config (may contain keys / proxy URLs)
 config.js
+
+# Planning artifacts
 kids_digital_comic_plan.svg
+implementation_plan.md
+task.md
+walkthrough.md
+images made/
+
+# Dependencies
+node_modules/
+
+# Editor / tool folders
+.vscode/
+.cline/
+.claude/
+.kiro/
+.qoder/
+.qodo/
+.minimax/
+
+# OS noise
+.DS_Store
+Thumbs.db

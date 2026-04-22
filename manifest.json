@@ -1,0 +1,19 @@
+{
+  "name": "Kids Digital Comic",
+  "short_name": "KidComic",
+  "description": "Magical panel-by-panel stories, audio narration, quizzes and rewards for curious young readers.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#2B0054",
+  "theme_color": "#2B0054",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "kids", "entertainment"]
+}

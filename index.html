@@ -9,6 +9,8 @@
 <meta property="og:description" content="Magical panel-by-panel stories, audio narration, quizzes and rewards for curious young readers." />
 <meta property="og:type" content="website" />
 <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#2B0054" />
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
 <style>
 /* ============================================================
@@ -459,6 +461,7 @@ header {
 .card-myth    { background-image: url('assets/cover_myth.png'); }
 .card-animals { background-image: url('assets/cover_animals.png'); }
 .card-space   { background-image: url('assets/cover_space.png'); }
+.card-ocean   { background-image: url('assets/cover_ocean.png'); }
 
 .card-emoji { 
   font-size: 2.2rem; 
@@ -507,18 +510,11 @@ header {
   transform: translate(2px, 2px); 
   box-shadow: 1px 2px 0 var(--dark);
 }
-.card-btn:hover { 
-  transform: translate(-2px, -2px); 
-  box-shadow: 6px 7px 0 var(--dark);
-}
-.card-btn:active {
-  transform: translate(2px, 2px); 
-  box-shadow: 2px 3px 0 var(--dark);
-}
 .card-fairy   .card-btn { background: var(--pink); }
 .card-myth    .card-btn { background: var(--orange); }
 .card-animals .card-btn { background: var(--mint); color: var(--dark); }
 .card-space   .card-btn { background: var(--blue); color: var(--dark); }
+.card-ocean   .card-btn { background: var(--teal); color: var(--dark); }
 
 /* ============================================================
    PROGRESS BAR
@@ -597,6 +593,9 @@ header {
   gap: 2px;
   text-decoration: none;
   color: #aaa;
+  background: none;
+  border: none;
+  outline: none;
   font-family: 'Baloo 2', cursive;
   font-size: .65rem;
   font-weight: 700;
@@ -633,7 +632,7 @@ footer {
 .footer-bottom {
   margin-top: 8px;
   font-size: .85rem;
-  color: #aaa;
+  color: #666;
   font-weight: 600;
 }
 
@@ -647,6 +646,75 @@ footer {
   footer { padding: 16px 14px; }
   .hero { padding: 28px 14px 24px; }
 }
+
+/* ============================================================
+   REDUCED MOTION
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .bg-gradient { animation: none; }
+  .particle { animation: none; opacity: 0; }
+  .owl-wing-left, .owl-wing-right { transition: none; }
+  .start-btn { animation: none; }
+  .story-card { transition: none; }
+  .progress-fill { transition: none; }
+  .progress-fill::after { animation: none; }
+}
+
+/* ============================================================
+   STARS MODAL OVERLAY
+   ============================================================ */
+.stars-modal-overlay {
+  display: none;
+  position: fixed; inset: 0; z-index: 300;
+  background: rgba(43,0,84,0.65);
+  backdrop-filter: blur(4px);
+  align-items: center; justify-content: center;
+  padding: 20px;
+}
+.stars-modal-overlay.show { display: flex; animation: fadeInOverlay .25s ease; }
+@keyframes fadeInOverlay { from{opacity:0} to{opacity:1} }
+
+.stars-modal {
+  background: #fff;
+  border: 5px solid var(--dark);
+  border-radius: var(--radius);
+  padding: 32px 28px 24px;
+  max-width: 360px; width: 100%;
+  text-align: center;
+  box-shadow: 10px 14px 0 var(--dark);
+  animation: popModal .4s cubic-bezier(.68,-.55,.27,1.55) both;
+}
+@keyframes popModal {
+  0%  { transform: scale(.3); opacity: 0; }
+  70% { transform: scale(1.06); }
+  100%{ transform: scale(1); opacity: 1; }
+}
+.stars-modal-emoji { font-size: 3.5rem; margin-bottom: 8px; }
+.stars-modal-title {
+  font-size: 1.6rem; font-weight: 900; color: var(--dark);
+  margin-bottom: 6px;
+}
+.stars-modal-count {
+  font-size: 2.6rem; font-weight: 900;
+  background: linear-gradient(135deg, var(--yellow), var(--orange));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 8px 0 4px;
+}
+.stars-modal-tip {
+  font-size: .9rem; font-weight: 600; color: #666;
+  margin-bottom: 20px; line-height: 1.4;
+}
+.stars-modal-close {
+  background: var(--dark); color: var(--yellow);
+  border: 3px solid var(--dark);
+  border-radius: 50px; padding: 12px 32px;
+  font-family: 'Baloo 2', cursive; font-size: 1rem; font-weight: 800;
+  cursor: pointer; box-shadow: 4px 5px 0 rgba(0,0,0,.3);
+  transition: all .15s;
+}
+.stars-modal-close:hover { transform: translate(-2px,-2px); box-shadow: 6px 7px 0 rgba(0,0,0,.3); }
+.stars-modal-close:active { transform: translate(2px,2px); box-shadow: 2px 3px 0 rgba(0,0,0,.3); }
 </style>
 </head>
 <body>
@@ -675,6 +743,8 @@ footer {
     <button class="lang-btn" data-lang="as" onclick="setLang('as')">🇮🇳 অসমীয়া</button>
   </div>
 </header>
+
+<main id="main-content">
 
 <!-- HERO SECTION -->
 <section class="hero">
@@ -723,7 +793,7 @@ footer {
 <section class="cards-grid" id="stories">
 
   <article class="story-card" data-genre="fairy">
-    <div class="card-image card-fairy"></div>
+    <div class="card-image card-fairy" role="img" aria-label="Fairy tales story cover"></div>
     <div class="card-content-wrap">
       <div class="card-emoji">🧚</div>
       <div class="card-title" id="card-title-fairy"></div>
@@ -733,7 +803,7 @@ footer {
   </article>
 
   <article class="story-card" data-genre="myth">
-    <div class="card-image card-myth"></div>
+    <div class="card-image card-myth" role="img" aria-label="Indian mythology story cover"></div>
     <div class="card-content-wrap">
       <div class="card-emoji">🏹</div>
       <div class="card-title" id="card-title-myth"></div>
@@ -743,7 +813,7 @@ footer {
   </article>
 
   <article class="story-card" data-genre="animals">
-    <div class="card-image card-animals"></div>
+    <div class="card-image card-animals" role="img" aria-label="Animals and nature story cover"></div>
     <div class="card-content-wrap">
       <div class="card-emoji">🦁</div>
       <div class="card-title" id="card-title-animals"></div>
@@ -753,12 +823,22 @@ footer {
   </article>
 
   <article class="story-card" data-genre="space">
-    <div class="card-image card-space"></div>
+    <div class="card-image card-space" role="img" aria-label="Space and science fiction story cover"></div>
     <div class="card-content-wrap">
       <div class="card-emoji">🚀</div>
       <div class="card-title" id="card-title-space"></div>
       <div class="card-desc" id="card-desc-space"></div>
       <a class="card-btn" href="story-viewer.html?genre=space" id="read-space"></a>
+    </div>
+  </article>
+
+  <article class="story-card" data-genre="ocean">
+    <div class="card-image card-ocean" role="img" aria-label="Ocean story cover"></div>
+    <div class="card-content-wrap">
+      <div class="card-emoji">🐟</div>
+      <div class="card-title" id="card-title-ocean"></div>
+      <div class="card-desc" id="card-desc-ocean"></div>
+      <a class="card-btn" href="story-viewer.html?genre=ocean" id="read-ocean"></a>
     </div>
   </article>
 
@@ -773,28 +853,41 @@ footer {
   <div class="progress-tip" id="progressTip">🌈 Read stories to earn stars! Keep going, superstar! 🌈</div>
 </section>
 
+</main><!-- /#main-content -->
+
+<!-- STARS MODAL -->
+<div class="stars-modal-overlay" id="starsModalOverlay" role="dialog" aria-modal="true" aria-labelledby="starsModalTitle">
+  <div class="stars-modal">
+    <div class="stars-modal-emoji">⭐</div>
+    <div class="stars-modal-title" id="starsModalTitle">Your Stars</div>
+    <div class="stars-modal-count" id="starsModalCount">0</div>
+    <div class="stars-modal-tip" id="starsModalTip">Read stories to earn more stars! Keep going, superstar! 🌈</div>
+    <button class="stars-modal-close" onclick="closeStarsModal()">OK, Let's Read! 📖</button>
+  </div>
+</div>
+
 <!-- BOTTOM NAVIGATION -->
-<nav class="bottom-nav">
-  <div class="nav-item active" id="navHome">
-    <span class="nav-icon">🏠</span>
+<nav class="bottom-nav" aria-label="Main navigation">
+  <a class="nav-item active" id="navHome" href="index.html" aria-current="page">
+    <span class="nav-icon" aria-hidden="true">🏠</span>
     <span>Home</span>
-  </div>
-  <div class="nav-item" id="navStories" onclick="document.getElementById('stories').scrollIntoView({behavior:'smooth'})">
-    <span class="nav-icon">📚</span>
+  </a>
+  <button class="nav-item" id="navStories" onclick="document.getElementById('stories').scrollIntoView({behavior:'smooth'})" aria-label="Scroll to stories">
+    <span class="nav-icon" aria-hidden="true">📚</span>
     <span>Stories</span>
-  </div>
-  <div class="nav-item" id="navStars" onclick="showStars()">
-    <span class="nav-icon">⭐</span>
+  </button>
+  <button class="nav-item" id="navStars" onclick="showStars()" aria-label="View your stars">
+    <span class="nav-icon" aria-hidden="true">⭐</span>
     <span>Stars</span>
-  </div>
-  <div class="nav-item" id="navBadges" onclick="goToBadges()">
-    <span class="nav-icon">🏆</span>
+  </button>
+  <a class="nav-item" id="navBadges" href="quiz-rewards.html" aria-label="Go to badges">
+    <span class="nav-icon" aria-hidden="true">🏆</span>
     <span>Badges</span>
-  </div>
-  <div class="nav-item" id="navVoice" onclick="goToVoice()">
-    <span class="nav-icon">🎙️</span>
+  </a>
+  <a class="nav-item" id="navVoice" href="audio-narrator.html" aria-label="Go to voice narrator">
+    <span class="nav-icon" aria-hidden="true">🎙️</span>
     <span>Voice</span>
-  </div>
+  </a>
 </nav>
 
 <!-- FOOTER -->
@@ -803,7 +896,7 @@ footer {
   <div class="footer-bottom">© 2026 Kids Digital Comic · All ages welcome 🌍</div>
 </footer>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" onerror="window.__gsapFailed=true"></script>
 
 <script>
 /* ============================================================
@@ -821,8 +914,10 @@ const STRINGS = {
       myth:    { title: "🏹 Indian Mythology & Folklore",      desc: "Discover the tales of gods, goddesses and epic heroes from India's rich ancient traditions! 🌺" },
       animals: { title: "🦁 Animals & Nature Adventures",   desc: "Join clever animals in wild forests, deep oceans and sunny savannahs — nature is amazing! 🌿" },
       space:   { title: "🚀 Space & Science Fiction",         desc: "Blast off to distant galaxies, meet friendly aliens and solve mysteries among the stars! 🌌" },
+      ocean:   { title: "🐟 Ocean Adventures",               desc: "Dive deep with Finn the Little Fish and explore magical coral reefs and sunken pirate ships! 🌊" },
     },
     readNow:     "READ NOW 📖",
+    panel:       "Panel",
     progressLabel: (s) => `⭐ Your Stars: ${s} / 40`,
     progressTip: "🌈 Read stories to earn stars! Keep going, superstar! 🌈",
     footer:      "Made with ❤️ for little readers",
@@ -838,8 +933,10 @@ const STRINGS = {
       myth:    { title: "🏹 भारतीय पौराणिक कथाएँ और लोककथाएँ", desc: "भारत की समृद्ध प्राचीन परंपराओं से देवी-देवताओं और महाकाव्य नायकों की कहानियाँ! 🌺" },
       animals: { title: "🦁 जानवर और प्रकृति के रोमांच",    desc: "जंगल, गहरे समुद्र और सवाना में चालाक जानवरों के साथ जुड़ें — प्रकृति अद्भुत है! 🌿" },
       space:   { title: "🚀 अंतरिक्ष और विज्ञान कथा",      desc: "दूर की आकाशगंगाओं में उड़ें, दोस्ताना एलियंस से मिलें और तारों में रहस्य सुलझाएँ! 🌌" },
+      ocean:   { title: "🐟 महासागर के रोमांच",             desc: "छोटी मछली फिन के साथ गोता लगाएँ और जादुई कोरल रीफ और डूबे हुए जहाजों का अन्वेषण करें! 🌊" },
     },
     readNow:     "अभी पढ़ें 📖",
+    panel:       "पैनल",
     progressLabel: (s) => `⭐ आपके सितारे: ${s} / 40`,
     progressTip: "🌈 सितारे कमाने के लिए कहानियाँ पढ़ें! जारी रखो, सुपरस्टार! 🌈",
     footer:      "छोटे पाठकों के लिए ❤️ से बनाया गया",
@@ -855,8 +952,10 @@ const STRINGS = {
       myth:    { title: "🏹 ভাৰতীয় পুৰাণ আৰু লোককাহিনী",    desc: "ভাৰতৰ সমৃদ্ধ প্ৰাচীন পৰম্পৰাৰ দেৱ-দেৱী আৰু মহাকাব্যিক নায়কৰ কাহিনী আৱিষ্কাৰ কৰক! 🌺" },
       animals: { title: "🦁 জন্তু আৰু প্ৰকৃতিৰ অভিযান",     desc: "বনজংঘল, গভীৰ সাগৰ আৰু সবানাত চতুৰ জন্তুৰ সৈতে যোগ দিয়ক — প্ৰকৃতি আশ্চৰ্যজনক! 🌿" },
       space:   { title: "🚀 মহাকাশ আৰু বিজ্ঞান কথাসাহিত্য",  desc: "দূৰৱৰ্তী গেলেক্সিলৈ উৰি যাওক, বন্ধুত্বপূৰ্ণ এলিয়েনৰ সৈতে লগ হওক! 🌌" },
+      ocean:   { title: "🐟 সাগৰীয় অভিযান",                 desc: "সৰু ফিন মাছৰ সৈতে দ সাগৰত ডুব দিয়ক আৰু যাদুকৰী প্ৰবাল প্ৰাচীৰ আৱিষ্কাৰ কৰক! 🌊" },
     },
     readNow:     "এতিয়াই পঢ়ক 📖",
+    panel:       "পেনেল",
     progressLabel: (s) => `⭐ আপোনাৰ তৰা: ${s} / 40`,
     progressTip: "🌈 তৰা অৰ্জন কৰিবলৈ কাহিনী পঢ়ক! চলি থাকক, চুপাৰষ্টাৰ! 🌈",
     footer:      "সৰু পাঠকসকলৰ বাবে ❤️ দি তৈয়াৰ কৰা হৈছে",
@@ -884,7 +983,7 @@ function applyLang() {
   document.getElementById('storiesTitle').textContent  = s.storiesTitle;
   document.getElementById('continueTitle').textContent = s.continueTitle;
   document.getElementById('continueSub').textContent   = s.continueSub;
-  const genres = ['fairy','myth','animals','space'];
+  const genres = ['fairy','myth','animals','space','ocean'];
   genres.forEach(g => {
     document.getElementById(`card-title-${g}`).textContent = s.cards[g].title;
     document.getElementById(`card-desc-${g}`).textContent  = s.cards[g].desc;
@@ -913,42 +1012,61 @@ function initProgress() {
    ============================================================ */
 function checkContinueReading() {
   try {
-    const stars = parseInt(localStorage.getItem('kidsDC_stars') || '0');
-    if (stars > 0) {
+    const lastGenre = localStorage.getItem('kidsDC_lastGenre');
+    const lastPanel = parseInt(localStorage.getItem('kidsDC_lastPanel') || '0');
+    if (lastGenre) {
+      const s = STRINGS[currentLang];
       document.getElementById('continueSection').classList.add('show');
+      // Update subtitle to show which story + panel
+      const cardTitle = s.cards[lastGenre] ? s.cards[lastGenre].title : lastGenre;
+      document.getElementById('continueTitle').textContent = s.continueTitle;
+      document.getElementById('continueSub').textContent = cardTitle + ' — ' + (s.panel || 'Panel') + ' ' + (lastPanel + 1);
     }
   } catch(e) {}
 }
 
 function continueReading() {
-  // Show alert with stars count
   try {
-    const stars = localStorage.getItem('kidsDC_stars') || '0';
-    alert(`⭐ You have ${stars} stars!\nKeep reading stories to earn more!`);
+    const lastGenre = localStorage.getItem('kidsDC_lastGenre');
+    const lastPanel = localStorage.getItem('kidsDC_lastPanel') || '0';
+    if (lastGenre) {
+      window.location.href = `story-viewer.html?genre=${lastGenre}&panel=${lastPanel}`;
+    } else {
+      document.getElementById('stories').scrollIntoView({ behavior: 'smooth' });
+    }
   } catch(e) {
-    alert('Start reading a story! 📖');
+    document.getElementById('stories').scrollIntoView({ behavior: 'smooth' });
   }
 }
 
 /* ============================================================
-   BOTTOM NAV ACTIONS
+   STARS MODAL
    ============================================================ */
 function showStars() {
   try {
-    const stars = localStorage.getItem('kidsDC_stars') || '0';
-    alert(`⭐ You have ${stars} stars!\nKeep reading to earn more!`);
-  } catch(e) {
-    alert('⭐ You have 0 stars!\nStart reading to earn some!');
-  }
+    const stars = parseInt(localStorage.getItem('kidsDC_stars') || '0');
+    const s = STRINGS[currentLang];
+    document.getElementById('starsModalCount').textContent = '⭐ ' + stars + ' / 40';
+    document.getElementById('starsModalTip').textContent = s.progressTip;
+    document.getElementById('starsModalTitle').textContent = s.progressLabel(stars).replace('⭐ ', '');
+  } catch(e) {}
+  const overlay = document.getElementById('starsModalOverlay');
+  overlay.classList.add('show');
+  overlay.querySelector('.stars-modal-close').focus();
 }
 
-function goToBadges() {
-  window.location.href = 'quiz-rewards.html';
+function closeStarsModal() {
+  document.getElementById('starsModalOverlay').classList.remove('show');
 }
 
-function goToVoice() {
-  window.location.href = 'audio-narrator.html';
-}
+// Close modal on overlay click
+document.getElementById('starsModalOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeStarsModal();
+});
+// Close modal on Escape
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeStarsModal();
+});
 
 /* ============================================================
    FOOTER ROTATION
@@ -993,30 +1111,38 @@ window.addEventListener('DOMContentLoaded', () => {
     navigator.serviceWorker.register('./service-worker.js').catch(() => {});
   }
 
-  gsap.fromTo('.story-card',
-    { y: 80, opacity: 0 },
-    {
-      y: 0, opacity: 1,
-      duration: 0.7,
-      stagger: 0.15,
-      ease: 'back.out(1.7)',
-      delay: 0.3,
-    }
-  );
+  if (window.__gsapFailed || typeof gsap === 'undefined') {
+    // GSAP failed to load — make everything visible immediately
+    document.querySelectorAll('.story-card, #tagline, #startBtn, .progress-section').forEach(el => {
+      el.style.opacity = '1';
+      el.style.transform = 'none';
+    });
+  } else {
+    gsap.fromTo('.story-card',
+      { y: 80, opacity: 0 },
+      {
+        y: 0, opacity: 1,
+        duration: 0.7,
+        stagger: 0.15,
+        ease: 'back.out(1.7)',
+        delay: 0.3,
+      }
+    );
 
-  gsap.fromTo('#tagline',
-    { y: 30, opacity: 0 },
-    { y: 0, opacity: 1, duration: 0.8, delay: 0.6, ease: 'power3.out' }
-  );
-  gsap.fromTo('#startBtn',
-    { scale: 0.7, opacity: 0 },
-    { scale: 1, opacity: 1, duration: 0.7, delay: 0.9, ease: 'back.out(2)' }
-  );
+    gsap.fromTo('#tagline',
+      { y: 30, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.8, delay: 0.6, ease: 'power3.out' }
+    );
+    gsap.fromTo('#startBtn',
+      { scale: 0.7, opacity: 0 },
+      { scale: 1, opacity: 1, duration: 0.7, delay: 0.9, ease: 'back.out(2)' }
+    );
 
-  gsap.fromTo('.progress-section',
-    { y: 40, opacity: 0 },
-    { y: 0, opacity: 1, duration: 0.8, delay: 0.8, ease: 'power3.out' }
-  );
+    gsap.fromTo('.progress-section',
+      { y: 40, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.8, delay: 0.8, ease: 'power3.out' }
+    );
+  }
 });
 </script>
 </body>
