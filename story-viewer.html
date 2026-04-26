@@ -338,6 +338,18 @@ body {
   transition: transform .38s cubic-bezier(.4,0,.2,1), opacity .38s ease;
 }
 
+/* Panel Image */
+.panel-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+}
+
 .panel-card.anim-exit-left  { transform: translateX(-112%); opacity: 0; }
 .panel-card.anim-exit-right { transform: translateX( 112%); opacity: 0; }
 .panel-card.anim-enter-left  { transform: translateX(-112%); opacity: 0; transition: none; }
@@ -387,6 +399,8 @@ body {
   user-select: none;
   gap: 4px;
   min-height: 160px;
+  position: relative;
+  z-index: 5;
 }
 .em {
   display: inline-block;
@@ -419,6 +433,7 @@ body {
   box-shadow: 6px 8px 0 var(--dark);
   text-align: center;
   line-height: 1.45;
+  z-index: 10;
 }
 .speech-bubble::before {
   content: '';
@@ -450,6 +465,8 @@ body {
   text-align: center; line-height: 1.5;
   border-top: 2px solid rgba(255,255,255,.15);
   border-radius: 0 0 16px 16px;
+  position: relative;
+  z-index: 10;
 }
 
 /* Dots */
@@ -693,6 +710,7 @@ body {
 
   <div class="panel-wrapper" id="panelWrapper">
     <div class="panel-card" id="panelCard">
+      <img id="panelImage" class="panel-image" src="" alt="Story Panel" />
       <span class="panel-badge" id="panelBadge">Panel 1 / 6</span>
       <div class="tap-to-hear" id="tapToHear" onclick="playNarration()">
         🔊 Read to Me
@@ -1482,6 +1500,22 @@ function renderPanel(idx){
   } else {
     card.style.borderColor = 'var(--dark)';
     card.style.boxShadow = '6px 7px 0 var(--dark), 0 12px 40px rgba(0,0,0,.18)';
+  }
+
+  // Load panel image
+  const genreImageMap = {
+    'fairy': 'fairy',
+    'myth': 'myth',
+    'animals': 'animals',
+    'space': 'space',
+    'ocean': 'ocean'
+  };
+  const imagePrefix = genreImageMap[state.genre] || state.genre;
+  const imagePath = `./assets/story_panels/${imagePrefix}_${idx+1}.jpeg`;
+  const panelImg = document.getElementById('panelImage');
+  if(panelImg) {
+    panelImg.src = imagePath;
+    panelImg.alt = `${state.genre} panel ${idx+1}`;
   }
 
   document.getElementById('panelBadge').textContent =

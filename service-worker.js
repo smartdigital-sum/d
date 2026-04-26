@@ -1,4 +1,4 @@
-const CACHE = 'kidsDC-v2';
+const CACHE = 'kidsDC-v3';
 const ASSETS = [
   './',
   './index.html',
@@ -13,6 +13,7 @@ const ASSETS = [
   './assets/cover_fairy.png',
   './assets/cover_myth.png',
   './assets/cover_space.png',
+  './assets/cover_ocean.png',
   // Story panels — all 24 images
   './assets/story_panels/animals_1.jpeg',
   './assets/story_panels/animals_2.jpeg',
@@ -38,6 +39,12 @@ const ASSETS = [
   './assets/story_panels/space_4.jpeg',
   './assets/story_panels/space_5.jpeg',
   './assets/story_panels/space_6.jpeg',
+  './assets/story_panels/ocean_1.png',
+  './assets/story_panels/ocean_2.png',
+  './assets/story_panels/ocean_3.png',
+  './assets/story_panels/ocean_4.png',
+  './assets/story_panels/ocean_5.png',
+  './assets/story_panels/ocean_6.png',
   // Fonts
   'https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800;900&display=swap',
 ];
