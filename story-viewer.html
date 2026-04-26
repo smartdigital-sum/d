@@ -341,13 +341,13 @@ body {
 /* Panel Image */
 .panel-image {
   width: 100%;
-  height: 100%;
+  flex: 1;
+  min-height: 260px;
   object-fit: cover;
   object-position: center;
-  position: absolute;
-  top: 0;
-  left: 0;
+  position: relative;
   z-index: 0;
+  border-radius: 16px 16px 0 0;
 }
 
 .panel-card.anim-exit-left  { transform: translateX(-112%); opacity: 0; }
@@ -422,7 +422,7 @@ body {
 
 /* Speech Bubble */
 .speech-bubble {
-  margin: auto 20px 0;
+  margin: 20px 20px 0;
   background: #fff;
   border: 4px solid var(--dark);
   border-radius: 18px;
